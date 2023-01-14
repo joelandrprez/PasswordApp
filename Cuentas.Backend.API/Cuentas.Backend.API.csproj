@@ -20,7 +20,7 @@
     <ProjectReference Include="..\Cuentas.Backend.Domain\Cuentas.Backend.Domain.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Infraestruture\Cuentas.Backend.Infraestruture.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Shared\Cuentas.Backend.Shared.csproj" />
-    <ProjectReference Include="..\GESTION_CUENTAS.Backend.Aplication\Cuentas.Backend.Aplication.csproj" />
+    <ProjectReference Include="..\Cuentas.Backend.Aplication\Cuentas.Backend.Aplication.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
