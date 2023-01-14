@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Cuentas\Domain\" />
+    <Folder Include="EstadoProyecto\Domain\" />
+    <Folder Include="EstadoProyecto\DTO\" />
+    <Folder Include="EstadoProyecto\Interfaces\" />
+    <Folder Include="Proyecto\Domain\" />
+    <Folder Include="Proyecto\DTO\" />
+    <Folder Include="Proyecto\Interfaces\" />
+    <Folder Include="Token\Domain\" />
+    <Folder Include="Token\Interfaces\" />
+    <Folder Include="Tipocuenta\Domain\" />
+    <Folder Include="Tipocuenta\DTO\" />
+    <Folder Include="Tipocuenta\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.4.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cuentas.Backend.Shared\Cuentas.Backend.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
