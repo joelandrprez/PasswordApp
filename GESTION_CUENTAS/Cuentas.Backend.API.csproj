@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\EstadoProyecto\" />
     <Folder Include="Controllers\TipoCuenta\" />
-    <Folder Include="Controllers\Proyecto\" />
   </ItemGroup>
 
   <ItemGroup>

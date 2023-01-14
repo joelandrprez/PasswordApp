@@ -9,7 +9,8 @@ namespace Cuentas.Backend.Domain.Usuario.DTO
 {
     public class InUsuario
     {
-        public string Usuario { get; set; }
+        public int? Id { get; set; }
+        public string NombreUsuario { get; set; }
         public string Password { get; set; }
     }
     public class InUsuarioValidator : AbstractValidator<InUsuario>
@@ -17,7 +18,7 @@ namespace Cuentas.Backend.Domain.Usuario.DTO
         public InUsuarioValidator()
         {
 
-            RuleFor(x => x.Usuario).NotNull().NotEmpty().MinimumLength(1).EmailAddress();
+            RuleFor(x => x.NombreUsuario).NotNull().NotEmpty().MinimumLength(1).EmailAddress();
             RuleFor(x => x.Password).NotNull().NotEmpty().MinimumLength(1);
         }
 

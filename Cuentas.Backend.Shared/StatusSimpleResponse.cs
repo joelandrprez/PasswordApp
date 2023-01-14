@@ -12,7 +12,7 @@ namespace Cuentas.Backend.Shared
         public bool Satisfactorio { get; set; }
         public string Titulo { get; set; }
         public string Detalle { get; set; }
-        public string Status { get ; set; }
+        public int Status { get ; set; }
         public Dictionary<string, List<string>> Errores { get; set; }
 
 
@@ -21,6 +21,7 @@ namespace Cuentas.Backend.Shared
             this.Id = Guid.NewGuid();
             this.Titulo = null;
             this.Detalle = null;
+            this.Status = 200;
 
         }
 
@@ -29,6 +30,7 @@ namespace Cuentas.Backend.Shared
             this.Id = Guid.NewGuid();
             this.Satisfactorio = satisfactorio;
             this.Titulo = titulo;
+            this.Status = 200;
         }
 
         public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle)
@@ -37,6 +39,15 @@ namespace Cuentas.Backend.Shared
             this.Satisfactorio = satisfactorio;
             this.Titulo = titulo;
             this.Detalle = detalle;
+            this.Status = 200;
+        }
+        public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle,int status)
+        {
+            this.Id = Guid.NewGuid();
+            this.Satisfactorio = satisfactorio;
+            this.Titulo = titulo;
+            this.Detalle = detalle;
+            this.Status = status;
         }
 
         public StatusSimpleResponse(string titulo, Dictionary<string, List<string>> errores)
@@ -46,6 +57,7 @@ namespace Cuentas.Backend.Shared
             this.Titulo = titulo;
             this.Detalle = null;
             this.Errores = errores;
+            this.Status = 200;
         }
 
         public StatusSimpleResponse(string titulo, string detalle, Dictionary<string, List<string>> errores)
@@ -55,6 +67,7 @@ namespace Cuentas.Backend.Shared
             this.Titulo = titulo;
             this.Detalle = detalle;
             this.Errores = errores;
+            this.Status = 200;
         }
     }
 }

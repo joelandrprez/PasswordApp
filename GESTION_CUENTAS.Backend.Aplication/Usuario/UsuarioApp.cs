@@ -14,29 +14,45 @@ using Microsoft.Extensions.Logging;
 using System.Data.SqlClient;
 using Cuentas.Backend.Domain.Usuario.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Cuentas.Backend.Aplication.Token;
+using FluentValidation.Results;
 
 namespace Cuentas.Backend.Aplication.Usuario
 {
     public class UsuarioApp:BaseApp<UsuarioApp>
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly TokenApp _token;
 
-        public UsuarioApp(ILogger<BaseApp<UsuarioApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository) : base(logger, configuracion)
+        public UsuarioApp(ILogger<BaseApp<UsuarioApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository, TokenApp token) : base(logger, configuracion)
         {
             _usuarioRepository= usuarioRepository;
+            _token=token;
         }
 
-        public async Task<StatusSimpleResponse> Registrar(InUsuario usuario)
+        public async Task<StatusSimpleResponse> Registrar(InUsuario usuario,string creadoPor)
         {
+
             StatusSimpleResponse Respuesta = new StatusSimpleResponse();
+            InUsuarioValidator validator = new InUsuarioValidator();
+            ValidationResult result = validator.Validate(usuario);
+            if (!result.IsValid)
+            {
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
+                Respuesta.Errores = this.GetErrors(result.Errors);
+                Respuesta.Status = StatusCodes.Status400BadRequest;
+                return Respuesta;
+            }
+
             DateTime FechaOperacion = DateTime.Now;
             UsuarioPortal UsuarioRegistro = new ();
-            UsuarioRegistro.Password = GenerateHashed(usuario.Password);
-            UsuarioRegistro.Usuario = usuario.Usuario;
-            UsuarioRegistro.Saltd = "autoGenerado";
+            UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
+            UsuarioRegistro.Usuario = usuario.NombreUsuario;
             UsuarioRegistro.FechaModificacion = FechaOperacion;
-            UsuarioRegistro.UsuarioCreacion = 1;
-            UsuarioRegistro.UsuarioModificacion = 1;
+            UsuarioRegistro.UsuarioCreacion =int.Parse(creadoPor);
+            UsuarioRegistro.UsuarioModificacion = int.Parse(creadoPor);
             UsuarioRegistro.FechaCreacion = FechaOperacion;
 
             SqlConnection conexion = new();
@@ -50,23 +66,27 @@ namespace Cuentas.Backend.Aplication.Usuario
             }
             catch (Exception ex)
             {
-                return this.RespuestaDeErrorFormateada(ex);
+                return new(false,"Error al crear la conexion", ex.Message, StatusCodes.Status500InternalServerError);
             }
 
             try
             {
                 StatusResponse<bool> ValidarExistencia = await this.ValidarExistenciaDeNombreDeUsuario(UsuarioRegistro.Usuario, conexion, transaction);
 
-                if (!ValidarExistencia.Satisfactorio)
+                if (!ValidarExistencia.Satisfactorio) {
+                    ValidarExistencia.Status = StatusCodes.Status500InternalServerError;
                     return ValidarExistencia;
+                }
 
                 if (ValidarExistencia.Data == MaestraConstante.ESTADO_USUARIO_EXISTE)
-                    return this.RespuestaDeErrorFormateada(MaestraConstante.MENSAJE_ESTADO_USUARIO_EXISTE);
-                
+                    return new(false, "El usuario ya esta registrado", "", StatusCodes.Status400BadRequest);
+
                 Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Registrar(UsuarioRegistro, conexion, transaction), "");
 
-                if (!Respuesta.Satisfactorio)
+                if (!Respuesta.Satisfactorio) {
+                    Respuesta.Status = StatusCodes.Status500InternalServerError;
                     return Respuesta;                  
+                }
 
                 transaction.Commit();
 
@@ -74,7 +94,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return this.RespuestaDeErrorFormateada(ex);
+                return new(false, "El usuario ya esta registrado", ex.Message, StatusCodes.Status400BadRequest);
 
             }
             finally {
@@ -93,6 +113,82 @@ namespace Cuentas.Backend.Aplication.Usuario
             Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
+
+        public async Task<StatusSimpleResponse> Actualizar(InUsuario usuario,int id, string creadoPor)
+        {
+
+            StatusSimpleResponse Respuesta = new StatusSimpleResponse();
+            InUsuarioValidator validator = new InUsuarioValidator();
+            ValidationResult result = validator.Validate(usuario);
+            if (!result.IsValid)
+            {
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
+                Respuesta.Errores = this.GetErrors(result.Errors);
+                Respuesta.Status = StatusCodes.Status400BadRequest;
+                return Respuesta;
+            }
+
+            DateTime FechaOperacion = DateTime.Now;
+
+            UsuarioPortal UsuarioRegistro = new();
+            UsuarioRegistro.Id = id;
+            UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
+            UsuarioRegistro.UsuarioModificacion = int.Parse(creadoPor);
+            UsuarioRegistro.FechaModificacion = FechaOperacion;
+
+            SqlConnection conexion = new();
+            SqlTransaction transaction = null;
+
+            try
+            {
+                conexion = this.ConexionParaTransaccion();
+                conexion.Open();
+                transaction = conexion.BeginTransaction();
+            }
+            catch (Exception ex)
+            {
+                return new(false, "Error al crear la conexion", ex.Message, StatusCodes.Status500InternalServerError);
+            }
+
+            try
+            {
+
+                Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Actualizar(UsuarioRegistro, id, conexion, transaction), "");
+
+                if (!Respuesta.Satisfactorio)
+                {
+                    Respuesta.Status = StatusCodes.Status500InternalServerError;
+                    return Respuesta;
+                }
+
+                transaction.Commit();
+
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return new(false, "El usuario ya esta registrado", ex.Message, StatusCodes.Status400BadRequest);
+
+            }
+            finally
+            {
+                if (transaction != null)
+                    transaction.Dispose();
+
+                if (conexion != null)
+                {
+                    if (conexion.State == System.Data.ConnectionState.Open)
+                        conexion.Close();
+                    conexion.Dispose();
+                }
+            }
+
+
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            return Respuesta;
+        }
+
         public async Task<StatusResponse<bool>> ValidarExistenciaDeNombreDeUsuario(string usuario, SqlConnection conexion, SqlTransaction transaccion) {
 
             StatusResponse<UsuarioPortal> Busqueda = new ();
@@ -110,37 +206,8 @@ namespace Cuentas.Backend.Aplication.Usuario
             return Respuesta;
 
         }
-        public StatusSimpleResponse RespuestaDeErrorFormateada(Exception exception) {
 
-            StatusSimpleResponse Respuesta = new StatusSimpleResponse(false, MaestraConstante.MENSAJE_ERROR_GENERICO_CATH);
-            Guid id = Guid.NewGuid();
-            Respuesta.Id = id;
-            this._logger.LogError(exception, "Id: {0}", Respuesta.Id);
-            Respuesta.Detalle = exception.ToString();
-            return Respuesta;
 
-        }
-        public StatusSimpleResponse RespuestaDeErrorFormateada(string exception)
-        {
 
-            StatusSimpleResponse Respuesta = new StatusSimpleResponse(false, MaestraConstante.MENSAJE_ERROR_GENERICO_CATH);
-            Guid id = Guid.NewGuid();
-            Respuesta.Id = id;
-            Respuesta.Titulo = exception;
-            return Respuesta;
-
-        }
-
-        public string GenerateHashed(string password)
-        {
-            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                            password: password,
-                            salt: salt,
-                            prf: KeyDerivationPrf.HMACSHA256,
-                            iterationCount: 100000,
-                            numBytesRequested: 256 / 8));
-            return hashed;
-        }
     }
 }

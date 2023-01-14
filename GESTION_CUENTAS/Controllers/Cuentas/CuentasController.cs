@@ -27,12 +27,9 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         public async Task<ActionResult> Search(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             StatusResponse<Pagination<OutCuenta>> status = new StatusResponse<Pagination<OutCuenta>>();
-            if (!status.Satisfactorio)
-                return StatusCode(StatusCodes.Status500InternalServerError, status);
+            return StatusCode(status.Status, status);
 
-            return Ok(status);
         }
-        [Authorize]
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> Registrar([FromBody] InCuenta cuenta)

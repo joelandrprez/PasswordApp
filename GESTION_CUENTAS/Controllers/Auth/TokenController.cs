@@ -29,7 +29,7 @@ namespace Cuentas.Backend.API.Controllers.Token
         {
             StatusResponse<OuUsuarioLogeado> Respuesta = await _tokenApp.Login(cuenta);
 
-            return Ok(Respuesta);
+            return StatusCode(Respuesta.Status, Respuesta);
         }
 
     }

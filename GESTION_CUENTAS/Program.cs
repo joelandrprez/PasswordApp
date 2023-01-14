@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Cuentas.Backend.Aplication.Usuario;
 using Cuentas.Backend.Infraestruture.Usuario;
 using Cuentas.Backend.Domain.Usuario.Interfaces;
+using Cuentas.Backend.Aplication.EstadoProyecto;
+using Cuentas.Backend.Infraestruture.EstadoProyecto;
+using Cuentas.Backend.Domain.EstadoProyecto.Interfaces;
 
 string AllAllowSpecificOrigins = "_AllAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -80,6 +83,9 @@ builder.Services.AddTransient<TokenApp>();
 
 builder.Services.AddTransient<UsuarioApp>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+builder.Services.AddTransient<EstadoProyectoApp>();
+builder.Services.AddScoped<IEstadoProyectoRepository, EstadoProyectoRepository>();
 
 var app = builder.Build();
 

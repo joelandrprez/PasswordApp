@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cuentas.Backend.Domain.Usuario.Domain
+namespace Cuentas.Backend.Domain.EstadoProyecto.Domain
 {
-    public class UsuarioPortal
+    public class EstadoProject
     {
         public int Id { get; set; }
-        public string Usuario { get; set; }
-        public string Password { get; set; }
+        public bool Estado { get; set; }
+        public string Descripcion { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public int UsuarioCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }
-        public int UsuarioModificacion { get; set; }
-
+        public int UsuarioCrea { get; set; }
+        public int UsuarioModifica { get; set; }
     }
 }
