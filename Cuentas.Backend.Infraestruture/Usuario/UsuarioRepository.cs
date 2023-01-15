@@ -38,9 +38,6 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             catch (Exception ex) {
                 throw new CustomException("Sucedió un error al realizar la operación", ex);
             }
-
-
-
         }
 
         public async Task Actualizar(UsuarioPortal usuario, int id, SqlConnection conexion, SqlTransaction transaccion) {

@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Sql\02.Views\" />
-    <Folder Include="Sql\03.Data\" />
     <Folder Include="TipoCuenta\" />
     <Folder Include="Proyecto\" />
   </ItemGroup>

@@ -26,23 +26,25 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         [Route("search")]
         public async Task<ActionResult> Search(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
-            StatusResponse<Pagination<OutCuenta>> status = new StatusResponse<Pagination<OutCuenta>>();
-            return StatusCode(status.Status, status);
+            StatusResponse<Pagination<OutCuenta>> Respuesta = new StatusResponse<Pagination<OutCuenta>>();
+            return StatusCode(Respuesta.Status, Respuesta);
 
         }
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> Registrar([FromBody] InCuenta cuenta)
         {
-            StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta);
-
-            return Ok(Respuesta);
+            string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
+            StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(CreadoPor));
+            return StatusCode(Respuesta.Status, Respuesta);
         }
         [HttpPut]
-        [Route("")]
-        public async Task<ActionResult> Actualizar([FromRoute] InCuenta cuenta)
+        [Route("{id}")]
+        public async Task<ActionResult> Actualizar([FromBody] InCuenta cuenta, [FromRoute] int id)
         {
-            return Ok();
+            string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
+            StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(CreadoPor));
+            return StatusCode(Respuesta.Status, Respuesta);
         }
     }
 }

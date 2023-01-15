@@ -148,3 +148,73 @@
 		UsuarioModifica	 =@UsuarioModifica	 
 		where Id =@Id
 	END
+
+	GO
+
+	CREATE OR ALTER PROC INS_RegistrarCuentas
+	(
+	@TipoCuenta_Id	int,
+	@Sitio	varchar(1000),
+	@Usuario	varchar(50),
+	@Password	varchar(50),
+	@Usuario_Id	int,
+	@Proyecto_Id	int,
+	@FechaCreacion	datetime,
+	@UsuarioCrea	int,
+	@FechaModificacion	datetime,
+	@UsuarioModificacion	int
+	)
+	AS
+	BEGIN
+		insert into cuentas
+		(TipoCuenta_Id,
+		Sitio,
+		Usuario,
+		Password,
+		Usuario_Id,
+		Proyecto_Id,
+		FechaCreacion,
+		UsuarioCrea,
+		FechaModificacion,
+		UsuarioModificacion)
+		Values(
+		@TipoCuenta_Id, 
+		@Sitio,
+		@Usuario,
+		@Password,
+		@Usuario_Id,
+		@Proyecto_Id,
+		@FechaCreacion,
+		@UsuarioCrea,
+		@FechaModificacion,
+		@UsuarioModificacion	
+		)
+	END
+
+	GO
+
+	CREATE OR ALTER PROC UPD_UpdateCuentas
+	(
+	@Id	int,
+	@TipoCuenta_Id	int,
+	@Sitio	varchar(1000),
+	@Usuario	varchar(50),
+	@Password	varchar(50),
+	@Usuario_Id	int,
+	@Proyecto_Id	int,
+	@FechaModificacion	datetime,
+	@UsuarioModificacion	int
+	)
+	AS
+	BEGIN
+		update cuentas set 
+		TipoCuenta_Id=@TipoCuenta_Id, 
+		Sitio=@Sitio,
+		Usuario=@Usuario,
+		Password=@Password,
+		Usuario_Id=@Usuario_Id,
+		Proyecto_Id=@Proyecto_Id,
+		FechaModificacion=@FechaModificacion,
+		UsuarioModificacion=@UsuarioModificacion	
+		where id = @Id
+	END

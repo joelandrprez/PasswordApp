@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Cuentas\Domain\" />
     <Folder Include="Proyecto\Domain\" />
     <Folder Include="Proyecto\DTO\" />
     <Folder Include="Proyecto\Interfaces\" />

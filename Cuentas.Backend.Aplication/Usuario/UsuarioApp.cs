@@ -94,7 +94,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return new(false, "El usuario ya esta registrado", ex.Message, StatusCodes.Status400BadRequest);
+                return new(false, "Ocurrio un error al registrar el usuario", ex.Message, StatusCodes.Status400BadRequest);
 
             }
             finally {

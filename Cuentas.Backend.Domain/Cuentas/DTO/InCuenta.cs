@@ -15,17 +15,13 @@ namespace Cuentas.Backend.Domain.Cuentas.DTO
         public string Usuario { get; set; } 
         public string Password { get; set; } 
         public int Proyecto_Id { get; set; }
-        public DateTime FechaCreacion { get; set; }
-        public int UsuarioCrea { get; set; }
-        public DateTime FechaModificacion { get; set; }
-        public int UsuarioModificacion { get; set; } 
     }
     public class InCuentaValidator : AbstractValidator<InCuenta>
     {
         public InCuentaValidator()
         {
             //RuleFor(x => x.Id).NotNull().NotEmpty();
-            RuleFor(x => x.TipoCuenta_Id).NotNull().NotEmpty();
+            RuleFor(x => x.TipoCuenta_Id).NotEmpty();
             RuleFor(x => x.Sitio).NotNull().NotEmpty().MinimumLength(1);
             RuleFor(x => x.Usuario).NotNull().NotEmpty().MinimumLength(1);
             RuleFor(x => x.Password).NotNull().NotEmpty().MinimumLength(1);
