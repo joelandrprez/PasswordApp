@@ -36,7 +36,7 @@ namespace Cuentas.Backend.Aplication.Token
         public async Task<StatusResponse<OuUsuarioLogeado>> Login(InUsuario usuario) {
 
             StatusResponse<OuUsuarioLogeado> Respuesta = new StatusResponse<OuUsuarioLogeado>();
-            
+
             StatusResponse<UsuarioPortal> Validacion = await this.ProcesoComplejo(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(usuario.NombreUsuario));
 
             if (!Validacion.Satisfactorio )

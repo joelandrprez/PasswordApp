@@ -23,6 +23,19 @@ namespace Cuentas.Backend.Aplication.Cuentas
         {
             _cuentaRepository = cuentaRepository;
         }
+
+        public async Task<StatusResponse<Pagination<Cuenta>>> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        {
+            page = page ?? 1;
+            size = size ?? 10;
+            StatusResponse<Pagination<Cuenta>> Respuesta = await this.ProcesoComplejo(() => _cuentaRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Status = StatusCodes.Status500InternalServerError;
+
+            return Respuesta;
+        }
+
         public async Task<StatusSimpleResponse> Registrar(InCuenta cuenta,int idUsuarioProceso) {
             DateTime FechaRegistro = DateTime.Now;
 
@@ -100,6 +113,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
             return Respuesta;
         
         }
+
         public async Task<StatusSimpleResponse> Actualizar(InCuenta cuenta,int id,int idUsuarioProceso)
         {
             StatusSimpleResponse Respuesta = new StatusSimpleResponse(false, "");

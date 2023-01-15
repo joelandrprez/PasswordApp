@@ -1,4 +1,5 @@
 ﻿using Cuentas.Backend.Aplication.Cuentas;
+using Cuentas.Backend.Domain.Cuentas.Domain;
 using Cuentas.Backend.Domain.Cuentas.DTO;
 using Cuentas.Backend.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,14 +23,15 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
             _logger = logger;
             _cuentaApp = cuentaApp;
         }
-        [HttpGet]
-        [Route("search")]
-        public async Task<ActionResult> Search(int? page, int? size, string? search, string? orderBy, string? orderDir)
-        {
-            StatusResponse<Pagination<OutCuenta>> Respuesta = new StatusResponse<Pagination<OutCuenta>>();
-            return StatusCode(Respuesta.Status, Respuesta);
 
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        {
+            StatusResponse<Pagination<Cuenta>> Respuesta = await _cuentaApp.Listar(page,size,search,orderBy,orderDir);
+            return StatusCode(Respuesta.Status, Respuesta);
         }
+
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> Registrar([FromBody] InCuenta cuenta)
@@ -38,6 +40,7 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
             StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(CreadoPor));
             return StatusCode(Respuesta.Status, Respuesta);
         }
+
         [HttpPut]
         [Route("{id}")]
         public async Task<ActionResult> Actualizar([FromBody] InCuenta cuenta, [FromRoute] int id)

@@ -1,4 +1,5 @@
 ﻿using Cuentas.Backend.Aplication.Usuario;
+using Cuentas.Backend.Domain.Usuario.Domain;
 using Cuentas.Backend.Domain.Usuario.DTO;
 using Cuentas.Backend.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cuentas.Backend.API.Controllers.Usuario
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/v1/usuario")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Usuario")]
@@ -19,6 +20,14 @@ namespace Cuentas.Backend.API.Controllers.Usuario
         {
             _logger = logger;
             _usuarioApp = usuarioApp;
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        {
+            StatusResponse<Pagination<UsuarioPortal>> Respuesta = await _usuarioApp.Listar(page, size, search, orderBy, orderDir);
+            return StatusCode(Respuesta.Status, Respuesta);
         }
 
         [HttpPost]

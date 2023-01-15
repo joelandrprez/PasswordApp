@@ -21,7 +21,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             this._connection = connection;
         }
 
-        public async Task Registrar(UsuarioPortal usuario, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Registrar(Domain.Usuario.Domain.UsuarioPortal usuario, SqlConnection conexion, SqlTransaction transaccion)
         {
             try {
                 DynamicParameters parametros = new DynamicParameters();
@@ -40,7 +40,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             }
         }
 
-        public async Task Actualizar(UsuarioPortal usuario, int id, SqlConnection conexion, SqlTransaction transaccion) {
+        public async Task Actualizar(Domain.Usuario.Domain.UsuarioPortal usuario, int id, SqlConnection conexion, SqlTransaction transaccion) {
             try
             {
                 DynamicParameters parametros = new DynamicParameters();
@@ -98,6 +98,59 @@ namespace Cuentas.Backend.Infraestruture.Usuario
 
 
             return Usuario;
+        }
+
+        public async Task<Pagination<UsuarioPortal>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        {
+            Pagination<UsuarioPortal> paginacion = null;
+            DynamicParameters dinamycParams = new DynamicParameters();
+            dinamycParams.Add("Page", page);
+            dinamycParams.Add("Size", size);
+            dinamycParams.Add("Search", search);
+            dinamycParams.Add("OrderBy", orderBy);
+            dinamycParams.Add("OrderDir", orderDir);
+            dinamycParams.Add("TotalGlobal", null, DbType.Int32, ParameterDirection.Output);
+            dinamycParams.Add("TotalFiltered", null, DbType.Int32, ParameterDirection.Output);
+            using (var scope = await this._connection.BeginConnection())
+            {
+                try
+                {
+                    paginacion = new Pagination<UsuarioPortal>();
+
+                    IEnumerable<UsuarioPortal> records = await scope.QueryAsync<UsuarioPortal>(
+                        "SEL_ListarUsuarios", dinamycParams, commandType: CommandType.StoredProcedure);
+
+                    paginacion.Records = records;
+                    paginacion.TotalGlobal = dinamycParams.Get<int>("TotalGlobal");
+                    paginacion.TotalFiltered = dinamycParams.Get<int>("TotalFiltered");
+
+                    int lastPage = ((paginacion.TotalFiltered % size) == 0) ? paginacion.TotalFiltered / size : (paginacion.TotalFiltered / size) + 1;
+
+                    paginacion.Next = MaestraConstante.URL_NEXT + "/api/v1/usuario?sort=page=2&size=" + size;
+                    if (page == 1)
+                    {
+                        paginacion.Previus = null;
+                    }
+                    else
+                    {
+                        paginacion.Previus = string.Format(MaestraConstante.URL_NEXT + "/api/v1/usuario?sort=&page={0}&size={1}", page - 1, size);
+                    }
+
+                    if (page >= lastPage)
+                    {
+                        paginacion.Next = null;
+                    }
+                    else
+                    {
+                        paginacion.Next = string.Format(MaestraConstante.URL_NEXT + "/api/v1/usuario?sort=&page={0}&size={1}", page + 1, size);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new CustomException("Sucedió un error al realizar la operación", ex);
+                }
+            }
+            return paginacion;
         }
     }
 }

@@ -31,6 +31,18 @@ namespace Cuentas.Backend.Aplication.Usuario
             _token=token;
         }
 
+        public async Task<StatusResponse<Pagination<UsuarioPortal>>> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        {
+            page = page ?? 1;
+            size = size ?? 10;
+            StatusResponse<Pagination<UsuarioPortal>> Respuesta = await this.ProcesoComplejo(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Status = StatusCodes.Status500InternalServerError;
+
+            return Respuesta;
+        }
+
         public async Task<StatusSimpleResponse> Registrar(InUsuario usuario,string creadoPor)
         {
 
@@ -47,7 +59,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             }
 
             DateTime FechaOperacion = DateTime.Now;
-            UsuarioPortal UsuarioRegistro = new ();
+            Domain.Usuario.Domain.UsuarioPortal UsuarioRegistro = new ();
             UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
             UsuarioRegistro.Usuario = usuario.NombreUsuario;
             UsuarioRegistro.FechaModificacion = FechaOperacion;
@@ -131,7 +143,7 @@ namespace Cuentas.Backend.Aplication.Usuario
 
             DateTime FechaOperacion = DateTime.Now;
 
-            UsuarioPortal UsuarioRegistro = new();
+            Domain.Usuario.Domain.UsuarioPortal UsuarioRegistro = new();
             UsuarioRegistro.Id = id;
             UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
             UsuarioRegistro.UsuarioModificacion = int.Parse(creadoPor);
@@ -191,7 +203,7 @@ namespace Cuentas.Backend.Aplication.Usuario
 
         public async Task<StatusResponse<bool>> ValidarExistenciaDeNombreDeUsuario(string usuario, SqlConnection conexion, SqlTransaction transaccion) {
 
-            StatusResponse<UsuarioPortal> Busqueda = new ();
+            StatusResponse<Domain.Usuario.Domain.UsuarioPortal> Busqueda = new ();
             bool respuesta = MaestraConstante.ESTADO_USUARIO_NO_EXISTE;
             Busqueda = await this.ProcesoComplejo(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuario(usuario, conexion, transaccion));
 

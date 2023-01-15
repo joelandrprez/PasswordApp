@@ -19,7 +19,7 @@ namespace Cuentas.Backend.Domain.Usuario.Interfaces
 
         Task<UsuarioPortal> ValidarExistenciaDeNombreDeUsuarioSinTransaccion(string nombreUsuario);
 
-
+        Task<Pagination<UsuarioPortal>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
 
     }
 }

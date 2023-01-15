@@ -12,7 +12,7 @@ namespace Cuentas.Backend.Domain.Cuentas.Interfaces
 {
     public interface ICuentaRepository
     {
-        Task<Pagination<OutCuenta>> Search(int page, int size, string? search, string? orderBy, string? orderDir);
+        Task<Pagination<Cuenta>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
         Task Registrar(Cuenta cuenta, SqlConnection conexion, SqlTransaction transaccion);
         Task Actualizar(Cuenta cuenta, SqlConnection conexion, SqlTransaction transaccion);
 

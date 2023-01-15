@@ -14,6 +14,9 @@ using Cuentas.Backend.Domain.Usuario.Interfaces;
 using Cuentas.Backend.Aplication.EstadoProyecto;
 using Cuentas.Backend.Infraestruture.EstadoProyecto;
 using Cuentas.Backend.Domain.EstadoProyecto.Interfaces;
+using Cuentas.Backend.Aplication.Proyecto;
+using Cuentas.Backend.Infraestruture.Proyecto;
+using Cuentas.Backend.Domain.Proyectos.Interfaces;
 
 string AllAllowSpecificOrigins = "_AllAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -86,6 +89,9 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddTransient<EstadoProyectoApp>();
 builder.Services.AddScoped<IEstadoProyectoRepository, EstadoProyectoRepository>();
+
+builder.Services.AddTransient<ProyectoApp>();
+builder.Services.AddScoped<IProyectoRepository, ProyectoRepository>();
 
 var app = builder.Build();
 

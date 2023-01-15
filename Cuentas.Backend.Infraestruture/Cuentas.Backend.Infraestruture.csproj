@@ -20,7 +20,6 @@
   <ItemGroup>
     <Folder Include="Sql\02.Views\" />
     <Folder Include="TipoCuenta\" />
-    <Folder Include="Proyecto\" />
   </ItemGroup>
 
 </Project>

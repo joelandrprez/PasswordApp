@@ -27,6 +27,5 @@
         public StatusResponse(string titulo, string detalle, Dictionary<string, List<string>> errores) : base(titulo, detalle, errores)
         {
         }
-
     }
 }
