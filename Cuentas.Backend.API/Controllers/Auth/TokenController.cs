@@ -2,9 +2,6 @@
 using Cuentas.Backend.Domain.Token.DTO;
 using Cuentas.Backend.Domain.Usuario.DTO;
 using Cuentas.Backend.Shared;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cuentas.Backend.API.Controllers.Token

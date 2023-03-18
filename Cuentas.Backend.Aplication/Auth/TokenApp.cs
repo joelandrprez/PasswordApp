@@ -43,7 +43,7 @@ namespace Cuentas.Backend.Aplication.Token
                 return new StatusResponse<OuUsuarioLogeado>(false,Validacion.Titulo,Validacion.Detalle, StatusCodes.Status500InternalServerError);
 
             if ( Validacion.Data == null)
-                return new StatusResponse<OuUsuarioLogeado>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status404NotFound);
+                return new StatusResponse<OuUsuarioLogeado>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status400BadRequest);
 
             var validacionPassword =  this.ValidacionContrasenia(usuario.Password, Validacion.Data.Password);
 
