@@ -49,5 +49,12 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
             StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(CreadoPor));
             return StatusCode(Respuesta.Status, Respuesta);
         }
+        [HttpGet]
+        [Route("getPassword/{id}")]
+        public async Task<ActionResult> getPassword(int id)
+        {
+            StatusResponse<Cuenta> Respuesta = await _cuentaApp.GetPassword(id);
+            return StatusCode(Respuesta.Status, Respuesta);
+        }
     }
 }

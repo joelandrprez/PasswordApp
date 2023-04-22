@@ -21,3 +21,9 @@ FechaModificacion)
 VALUES
 ('CHINALCO',1,16,GETDATE(),16,GETDATE()),
 ('KOMATSU',1,16,GETDATE(),16,GETDATE())
+
+GO
+
+insert into EstadoProyecto values
+(1,'Activo',GETDATE(),1,GETDATE(),1),
+(1,'Inactivo',GETDATE(),1,GETDATE(),1)

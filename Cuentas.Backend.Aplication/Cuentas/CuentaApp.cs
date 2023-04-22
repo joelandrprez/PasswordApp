@@ -194,5 +194,25 @@ namespace Cuentas.Backend.Aplication.Cuentas
             return Respuesta;
 
         }
+
+        public async Task<StatusResponse<Cuenta>> GetPassword(int id)
+        {
+            StatusResponse<Cuenta> Respuesta = await this.ProcesoComplejo(() => _cuentaRepository.GetPassword(id));
+
+
+
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Status = StatusCodes.Status500InternalServerError;
+
+            if (Respuesta.Data == null)
+            {
+                Respuesta.Status = StatusCodes.Status400BadRequest;
+                Respuesta.Titulo = "No se pudo recuperar el dato de la cuenta";
+                Respuesta.Satisfactorio = false;
+            }
+
+            return Respuesta;
+        }
+        
     }
 }

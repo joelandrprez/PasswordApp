@@ -12,6 +12,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Cuentas.Backend.Infraestruture.Cuentas
 {
@@ -131,6 +133,26 @@ namespace Cuentas.Backend.Infraestruture.Cuentas
                 }
             }
             return paginacion;
+        }
+
+        public async Task<Cuenta> GetPassword(int id)
+        {
+            Cuenta cuenta = new Cuenta();
+            try
+            {
+                using (var scope = await this._connection.BeginConnection())
+                { 
+                    DynamicParameters parametros = new DynamicParameters();
+                    parametros.Add("id", id);
+
+                    cuenta = await scope.QueryFirstOrDefaultAsync<Cuenta>("SEL_BuscarCuenta", parametros, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException("Sucedió un error al realizar la operación", ex);
+            }
+            return cuenta;
         }
     }
 }

@@ -15,7 +15,6 @@ namespace Cuentas.Backend.Domain.Cuentas.Interfaces
         Task<Pagination<Cuenta>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
         Task Registrar(Cuenta cuenta, SqlConnection conexion, SqlTransaction transaccion);
         Task Actualizar(Cuenta cuenta, SqlConnection conexion, SqlTransaction transaccion);
-
-
+        Task<Cuenta> GetPassword(int id);
     }
 }

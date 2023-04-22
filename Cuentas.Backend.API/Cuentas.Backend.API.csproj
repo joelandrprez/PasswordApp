@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\TipoCuenta\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Cuentas.Backend.Aplication\Cuentas.Backend.Aplication.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Domain\Cuentas.Backend.Domain.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Infraestruture\Cuentas.Backend.Infraestruture.csproj" />
