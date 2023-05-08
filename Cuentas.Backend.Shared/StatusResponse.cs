@@ -19,6 +19,9 @@
         public StatusResponse(bool satisfactorio, string titulo, string detalle, int status) : base(satisfactorio, titulo, detalle, status)
         {
         }
+        public StatusResponse(bool satisfactorio, string titulo, string detalle, int status, Dictionary<string, List<string>> errores) : base(satisfactorio, titulo, detalle, status, errores)
+        {
+        }
 
         public StatusResponse(string titulo, Dictionary<string, List<string>> errores) : base(titulo, errores)
         {

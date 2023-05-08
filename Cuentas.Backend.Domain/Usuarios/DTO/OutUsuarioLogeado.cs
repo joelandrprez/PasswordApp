@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cuentas.Backend.Domain.Token.DTO
 {
-    public class OuUsuarioLogeado
+    public class OutUsuarioLogeado
     {
         public string Token { get; set; }
     }

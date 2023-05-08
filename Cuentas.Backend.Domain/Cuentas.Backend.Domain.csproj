@@ -11,8 +11,6 @@
     <Folder Include="GenerarApp\Interfaces\" />
     <Folder Include="Auth\Domain\" />
     <Folder Include="Auth\Interfaces\" />
-    <Folder Include="Tipocuentas\DTO\" />
-    <Folder Include="Tipocuentas\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

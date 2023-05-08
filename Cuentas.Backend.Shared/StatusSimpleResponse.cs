@@ -49,6 +49,15 @@ namespace Cuentas.Backend.Shared
             this.Detalle = detalle;
             this.Status = status;
         }
+        public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle, int status, Dictionary<string, List<string>> errores) 
+        {
+            this.Id = Guid.NewGuid();
+            this.Satisfactorio = satisfactorio;
+            this.Titulo = titulo;
+            this.Detalle = detalle;
+            this.Status = status;
+            this.Errores = errores;
+        }
 
         public StatusSimpleResponse(string titulo, Dictionary<string, List<string>> errores)
         {

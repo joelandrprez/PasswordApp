@@ -17,11 +17,12 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
     {
         private readonly ILogger<CuentasController> _logger;
         private readonly CuentaApp _cuentaApp;
-
+        private string _usuario = string.Empty;
         public CuentasController(ILogger<CuentasController> logger, CuentaApp cuentaApp)
         {
             _logger = logger;
             _cuentaApp = cuentaApp;
+            
         }
 
         [HttpGet]
@@ -36,8 +37,8 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         [Route("")]
         public async Task<ActionResult> Registrar([FromBody] InCuenta cuenta)
         {
-            string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
-            StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(CreadoPor));
+            _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+            StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(_usuario));
             return StatusCode(Respuesta.Status, Respuesta);
         }
 
@@ -45,15 +46,16 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         [Route("{id}")]
         public async Task<ActionResult> Actualizar([FromBody] InCuenta cuenta, [FromRoute] int id)
         {
-            string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
-            StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(CreadoPor));
+            _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+            StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(_usuario));
             return StatusCode(Respuesta.Status, Respuesta);
         }
+
         [HttpGet]
-        [Route("getPassword/{id}")]
+        [Route("password/{id}")]
         public async Task<ActionResult> getPassword(int id)
         {
-            StatusResponse<Cuenta> Respuesta = await _cuentaApp.GetPassword(id);
+            StatusResponse<OutCuenta> Respuesta = await _cuentaApp.GetPassword(id);
             return StatusCode(Respuesta.Status, Respuesta);
         }
     }

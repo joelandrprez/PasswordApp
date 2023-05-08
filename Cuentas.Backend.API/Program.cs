@@ -86,7 +86,7 @@ builder.Services.AddScoped<ICustomConnection, CustomConnection>();
 builder.Services.AddTransient<CuentaApp>();
 builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();
 
-builder.Services.AddTransient<TokenApp>();
+builder.Services.AddTransient<AuthApp>();
 
 builder.Services.AddTransient<UsuarioApp>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();

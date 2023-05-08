@@ -13,47 +13,55 @@ using Cuentas.Backend.Aplication.Comun;
 using Microsoft.Extensions.Logging;
 using Cuentas.Backend.Aplication.Usuario;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using FluentValidation.Results;
+
 
 namespace Cuentas.Backend.Aplication.Token
 {
-    public class TokenApp : BaseApp<TokenApp>
+    public class AuthApp : BaseApp<AuthApp>
     {
         private string _key = string.Empty;
         private string _issuer = string.Empty;
         private string _audience = string.Empty;
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly UsuarioApp _usuario;
         private const int Pbkdf2Iterations = 1000;
 
-        public TokenApp(ILogger<BaseApp<TokenApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository) : base(logger, configuracion)
+        public AuthApp(ILogger<BaseApp<AuthApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository) : base(logger, configuracion)
         {
-            this._key = configuracion.GetValue<string>("Jwt:Issuer");
-            this._issuer = configuracion.GetValue<string>("Jwt:Audience");
-            this._audience = configuracion.GetValue<string>("Jwt:Key");
+            this._key = configuracion.GetValue<string>("Jwt:Key"); 
+            this._issuer = configuracion.GetValue<string>("Jwt:Issuer");
+            this._audience = configuracion.GetValue<string>("Jwt:Audience"); 
             this._usuarioRepository = usuarioRepository;
         }
 
-        public async Task<StatusResponse<OuUsuarioLogeado>> Login(InUsuario usuario) {
+        public async Task<StatusResponse<OutUsuarioLogeado>> Login(InUsuario usuario) {
 
-            StatusResponse<OuUsuarioLogeado> Respuesta = new StatusResponse<OuUsuarioLogeado>();
+
+            StatusResponse<OutUsuarioLogeado> Respuesta = new StatusResponse<OutUsuarioLogeado>();
+
+            InUsuarioValidator validator = new InUsuarioValidator();
+            ValidationResult resultadoValidacion = validator.Validate(usuario);
+
+            if (!resultadoValidacion.IsValid)
+                return new StatusResponse<OutUsuarioLogeado>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
 
             StatusResponse<UsuarioPortal> Validacion = await this.ProcesoComplejo(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(usuario.NombreUsuario));
 
             if (!Validacion.Satisfactorio )
-                return new StatusResponse<OuUsuarioLogeado>(false,Validacion.Titulo,Validacion.Detalle, StatusCodes.Status500InternalServerError);
+                return new StatusResponse<OutUsuarioLogeado>(false,Validacion.Titulo,Validacion.Detalle, StatusCodes.Status500InternalServerError);
 
             if ( Validacion.Data == null)
-                return new StatusResponse<OuUsuarioLogeado>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status400BadRequest);
+                return new StatusResponse<OutUsuarioLogeado>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status400BadRequest);
 
             var validacionPassword =  this.ValidacionContrasenia(usuario.Password, Validacion.Data.Password);
 
             if (!validacionPassword.Data) 
-                return new StatusResponse<OuUsuarioLogeado>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
+                return new StatusResponse<OutUsuarioLogeado>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
             
 
             Tuple<DateTime, string> Token =  GenerateToken(Validacion.Data.Id);
 
-            OuUsuarioLogeado UsuarioLogeado = new OuUsuarioLogeado();
+            OutUsuarioLogeado UsuarioLogeado = new OutUsuarioLogeado();
             UsuarioLogeado.Token = Token.Item2;
             Respuesta.Data = UsuarioLogeado;
             Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
@@ -87,7 +95,7 @@ namespace Cuentas.Backend.Aplication.Token
                     new Claim("IdUser",id.ToString())
                     }),
 
-                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    Expires = DateTime.UtcNow.AddHours(5),
                     Issuer = this._issuer,
                     Audience = this._audience,
                     SigningCredentials = new SigningCredentials
@@ -103,6 +111,7 @@ namespace Cuentas.Backend.Aplication.Token
             }
             catch (Exception ex)
             {
+                //TODO registrar en el log cuando se registre un error
                 return new Tuple<DateTime, string>(DateTime.Now, ex.Message);
             }
 
@@ -125,8 +134,8 @@ namespace Cuentas.Backend.Aplication.Token
                 var validationParameters = new TokenValidationParameters()
                 {
                     RequireExpirationTime = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
                     IssuerSigningKey = new SymmetricSecurityKey(symmetricKey)
                 };
 
@@ -138,7 +147,7 @@ namespace Cuentas.Backend.Aplication.Token
 
             catch (Exception ex)
             {
-
+                //TODO registrar en el log cuando se registre un error
                 return null;
             }
         }
@@ -158,39 +167,30 @@ namespace Cuentas.Backend.Aplication.Token
 
             try
             {
-                // Read header information
                 prf = (KeyDerivationPrf)ReadNetworkByteOrder(hashedPassword, 1);
                 iterCount = (int)ReadNetworkByteOrder(hashedPassword, 5);
                 int saltLength = (int)ReadNetworkByteOrder(hashedPassword, 9);
 
-                // Read the salt: must be >= 128 bits
                 if (saltLength < 128 / 8)
-                {
                     return false;
-                }
+                
                 byte[] salt = new byte[saltLength];
                 Buffer.BlockCopy(hashedPassword, 13, salt, 0, salt.Length);
-
-                // Read the subkey (the rest of the payload): must be >= 128 bits
                 int subkeyLength = hashedPassword.Length - 13 - salt.Length;
+
                 if (subkeyLength < 128 / 8)
-                {
                     return false;
-                }
+                
                 byte[] expectedSubkey = new byte[subkeyLength];
                 Buffer.BlockCopy(hashedPassword, 13 + salt.Length, expectedSubkey, 0, expectedSubkey.Length);
-
-                // Hash the incoming password and verify it
                 byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, prf, iterCount, subkeyLength);
-
+                
                 return CryptographicOperations.FixedTimeEquals(actualSubkey, expectedSubkey);
 
             }
-            catch
+            catch(Exception ex)
             {
-                // This should never occur except in the case of a malformed payload, where
-                // we might go off the end of the array. Regardless, a malformed payload
-                // implies verification failed.
+                //TODO registrar en el log cuando se registre un error
                 return false;
             }
         }
@@ -201,7 +201,7 @@ namespace Cuentas.Backend.Aplication.Token
             rng.GetBytes(salt);
             byte[] subkey = KeyDerivation.Pbkdf2(password, salt, prf, iterCount, numBytesRequested);
             var outputBytes = new byte[13 + salt.Length + subkey.Length];
-            outputBytes[0] = 0x01; // format marker
+            outputBytes[0] = 0x01; 
             WriteNetworkByteOrder(outputBytes, 1, (uint)prf);
             WriteNetworkByteOrder(outputBytes, 5, (uint)iterCount);
             WriteNetworkByteOrder(outputBytes, 9, (uint)saltSize);
@@ -225,5 +225,6 @@ namespace Cuentas.Backend.Aplication.Token
                 | ((uint)(buffer[offset + 2]) << 8)
                 | ((uint)(buffer[offset + 3]));
         }
+        
     }
 }

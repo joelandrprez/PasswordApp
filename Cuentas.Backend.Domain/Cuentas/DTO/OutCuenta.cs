@@ -8,5 +8,6 @@ namespace Cuentas.Backend.Domain.Cuentas.DTO
 {
     public class OutCuenta
     {
+        public string Cadena { get; set; }
     }
 }
