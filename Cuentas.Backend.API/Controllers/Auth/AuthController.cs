@@ -9,22 +9,22 @@ namespace Cuentas.Backend.API.Controllers.Token
     [Route("api/v1/token")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Token")]
-    public class TokenController : ControllerBase
+    public class AuthController : ControllerBase
     {
-        private readonly ILogger<TokenController> _logger;
-        private readonly TokenApp _tokenApp;
+        private readonly ILogger<AuthController> _logger;
+        private readonly AuthApp _authApp;
 
-        public TokenController(ILogger<TokenController> logger, TokenApp tokenApp)
+        public AuthController(ILogger<AuthController> logger, AuthApp authApp)
         {
             _logger = logger;
-            _tokenApp = tokenApp;
+            _authApp = authApp;
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult> Login([FromBody] InUsuario cuenta)
+        public async Task<ActionResult> Login([FromBody] InUsuario usuario)
         {
-            StatusResponse<OuUsuarioLogeado> Respuesta = await _tokenApp.Login(cuenta);
+            StatusResponse<OutUsuarioLogeado> Respuesta = await _authApp.Login(usuario);
 
             return StatusCode(Respuesta.Status, Respuesta);
         }

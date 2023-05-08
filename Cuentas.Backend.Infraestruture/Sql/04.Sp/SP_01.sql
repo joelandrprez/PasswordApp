@@ -55,3 +55,16 @@ AS
 BEGIN
 	select * from Cuentas where Id=@id
 END
+
+GO
+
+CREATE OR ALTER PROC SEL_BuscarUsuario
+(
+	@Usuario varchar(50)
+)
+AS
+BEGIN
+
+	select * from Usuario where Usuario = @Usuario
+	
+END

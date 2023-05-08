@@ -36,7 +36,6 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
         }
         public async Task<StatusSimpleResponse> Registrar(InEstadoProyecto estadoProyecto, string creadoPor)
         {
-
             StatusSimpleResponse Respuesta = new StatusSimpleResponse();
             InEstadoProyectoValidator validator = new InEstadoProyectoValidator();
             ValidationResult result = validator.Validate(estadoProyecto);
@@ -89,7 +88,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             catch (Exception ex)
             {
                 transaction.Rollback();
-                return new(false, "El usuario ya esta registrado", ex.Message, StatusCodes.Status400BadRequest);
+                return new(false, MaestraConstante.MENSAJE_ERROR_GENERICO, ex.Message, StatusCodes.Status400BadRequest);
 
             }
             finally

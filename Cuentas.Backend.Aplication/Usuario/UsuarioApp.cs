@@ -23,9 +23,9 @@ namespace Cuentas.Backend.Aplication.Usuario
     public class UsuarioApp:BaseApp<UsuarioApp>
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly TokenApp _token;
+        private readonly AuthApp _token;
 
-        public UsuarioApp(ILogger<BaseApp<UsuarioApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository, TokenApp token) : base(logger, configuracion)
+        public UsuarioApp(ILogger<BaseApp<UsuarioApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository, AuthApp token) : base(logger, configuracion)
         {
             _usuarioRepository= usuarioRepository;
             _token=token;
@@ -58,14 +58,7 @@ namespace Cuentas.Backend.Aplication.Usuario
                 return Respuesta;
             }
 
-            DateTime FechaOperacion = DateTime.Now;
-            Domain.Usuario.Domain.UsuarioPortal UsuarioRegistro = new ();
-            UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
-            UsuarioRegistro.Usuario = usuario.NombreUsuario;
-            UsuarioRegistro.FechaModificacion = FechaOperacion;
-            UsuarioRegistro.UsuarioCreacion =int.Parse(creadoPor);
-            UsuarioRegistro.UsuarioModificacion = int.Parse(creadoPor);
-            UsuarioRegistro.FechaCreacion = FechaOperacion;
+
 
             SqlConnection conexion = new();
             SqlTransaction transaction = null;
@@ -83,7 +76,14 @@ namespace Cuentas.Backend.Aplication.Usuario
 
             try
             {
-                StatusResponse<bool> ValidarExistencia = await this.ValidarExistenciaDeNombreDeUsuario(UsuarioRegistro.Usuario, conexion, transaction);
+                StatusResponse<bool> ValidarExistencia = await this.ValidarExistenciaDeNombreDeUsuario(usuario.NombreUsuario, conexion, transaction);
+
+                DateTime FechaOperacion = DateTime.Now;
+                UsuarioPortal UsuarioRegistro = new();
+                UsuarioRegistro.Password = this._token.HashPasswordV3(usuario.Password);
+                UsuarioRegistro.Usuario = usuario.NombreUsuario;
+                UsuarioRegistro.UsuarioCreacion = int.Parse(creadoPor);
+                UsuarioRegistro.FechaCreacion = FechaOperacion;
 
                 if (!ValidarExistencia.Satisfactorio) {
                     ValidarExistencia.Status = StatusCodes.Status500InternalServerError;

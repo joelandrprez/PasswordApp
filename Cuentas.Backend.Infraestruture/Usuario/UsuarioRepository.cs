@@ -67,7 +67,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
                 DynamicParameters parametros = new DynamicParameters();
                 parametros.Add("Usuario", nombreUsuario);
 
-                Usuario = await conexion.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarCuenta", parametros, transaccion, commandType: CommandType.StoredProcedure);
+                Usuario = await conexion.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarUsuario", parametros, transaccion, commandType: CommandType.StoredProcedure);
 
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
            {
                try
                {
-                   Usuario = await scope.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarCuenta", parametros, commandType: CommandType.StoredProcedure);
+                   Usuario = await scope.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarUsuario", parametros, commandType: CommandType.StoredProcedure);
 
                }
                catch (Exception ex)

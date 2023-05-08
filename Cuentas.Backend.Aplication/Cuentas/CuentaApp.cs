@@ -195,23 +195,27 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
         }
 
-        public async Task<StatusResponse<Cuenta>> GetPassword(int id)
+        public async Task<StatusResponse<OutCuenta>> GetPassword(int id)
         {
-            StatusResponse<Cuenta> Respuesta = await this.ProcesoComplejo(() => _cuentaRepository.GetPassword(id));
+            StatusResponse<Cuenta> DatosUsuario = await this.ProcesoComplejo(() => _cuentaRepository.GetPassword(id));
 
+            if (!DatosUsuario.Satisfactorio)
+                DatosUsuario.Status = StatusCodes.Status500InternalServerError;
 
-
-            if (!Respuesta.Satisfactorio)
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
-
-            if (Respuesta.Data == null)
+            if (DatosUsuario.Data == null)
             {
-                Respuesta.Status = StatusCodes.Status400BadRequest;
-                Respuesta.Titulo = "No se pudo recuperar el dato de la cuenta";
-                Respuesta.Satisfactorio = false;
+                DatosUsuario.Status = StatusCodes.Status400BadRequest;
+                DatosUsuario.Titulo = "No se pudo recuperar el dato de la cuenta";
+                DatosUsuario.Satisfactorio = false;
             }
 
-            return Respuesta;
+            OutCuenta cuenta = new OutCuenta();
+            cuenta.Cadena = DatosUsuario.Data.Password;
+            StatusResponse<OutCuenta> respuesta = new StatusResponse<OutCuenta>();
+            respuesta.Data = cuenta;
+            respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+
+            return respuesta;
         }
         
     }
