@@ -57,12 +57,12 @@ namespace Cuentas.Backend.Aplication.Token
 
             if (!validacionPassword.Data) 
                 return new StatusResponse<OutUsuarioLogeado>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
-            
 
-            Tuple<DateTime, string> Token =  GenerateToken(Validacion.Data.Id);
+
+            StatusResponse<string> Token =  GenerateToken(Validacion.Data.Id);
 
             OutUsuarioLogeado UsuarioLogeado = new OutUsuarioLogeado();
-            UsuarioLogeado.Token = Token.Item2;
+            UsuarioLogeado.Token = Token.Data;
             Respuesta.Data = UsuarioLogeado;
             Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
@@ -81,8 +81,9 @@ namespace Cuentas.Backend.Aplication.Token
             return Respuesta;
         }
 
-        public Tuple<DateTime, string> GenerateToken(int id)
+        public StatusResponse<string> GenerateToken(int id)
         {
+            StatusResponse<string> Respuesta = new();
             try
             {
 
@@ -92,27 +93,24 @@ namespace Cuentas.Backend.Aplication.Token
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                    new Claim("IdUser",id.ToString())
+                        new Claim("IdUser",id.ToString())
                     }),
-
-                    Expires = DateTime.UtcNow.AddHours(5),
-                    Issuer = this._issuer,
-                    Audience = this._audience,
-                    SigningCredentials = new SigningCredentials
-
-                    (new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha512Signature)
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha512Signature),
+                    Issuer = _issuer,
+                    Audience = _audience,
+                    Expires = DateTime.UtcNow.AddHours(5)
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
-                var jwtToken = tokenHandler.WriteToken(token);
-                var stringToken = tokenHandler.WriteToken(token);
-                return new Tuple<DateTime, string>(DateTime.Now, stringToken);
+                Respuesta.Data = tokenHandler.WriteToken(token);
+                return Respuesta;
             }
             catch (Exception ex)
             {
-                //TODO registrar en el log cuando se registre un error
-                return new Tuple<DateTime, string>(DateTime.Now, ex.Message);
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = ex.Message;
+                Respuesta.Status = StatusCodes.Status500InternalServerError;
+                return Respuesta;
             }
 
 

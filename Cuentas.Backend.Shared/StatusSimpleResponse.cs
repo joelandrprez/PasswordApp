@@ -64,7 +64,6 @@ namespace Cuentas.Backend.Shared
             this.Id = Guid.NewGuid();
             this.Satisfactorio = false;
             this.Titulo = titulo;
-            this.Detalle = null;
             this.Errores = errores;
             this.Status = 200;
         }

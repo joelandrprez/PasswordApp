@@ -35,27 +35,18 @@ namespace Cuentas.Backend.API.Authentication
                 #region == JWT Token Validation ===
                 try
                 {
+                    var key = Encoding.ASCII.GetBytes(_key);
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateIssuerSigningKey = false,
-
-                        //comment this and add this line to fool the validation logic
-                        SignatureValidator = delegate (string token, TokenValidationParameters parameters)
-                        {
-
-                            var jwt = new JwtSecurityToken(token);
-                            return jwt;
-
-                        },
-                        RequireExpirationTime = true,
-                        ValidateLifetime = true,//TODO: Habilitar la validez del token enviado desde el frontend
-                        ClockSkew = TimeSpan.Zero,
                         ValidIssuer = _issuer,
+                        ValidateAudience = true,
                         ValidAudience = _audience,
-                        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_key))
+                        ValidateLifetime = true
                     };
+
                 }
                 catch (Exception ex)
                 {
