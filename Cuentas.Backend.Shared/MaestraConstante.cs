@@ -32,6 +32,12 @@ namespace Cuentas.Backend.Shared
 
         public static readonly string URL_NEXT = "https://localhost:7069";
 
+        public static readonly int TIPO_ESTRUCTURA_CAPAS_ANGULAR = 1;
+
+        public static readonly int TIPO_ESTRUCTURA_CAPAS_CSHARP = 2;
+
+        public static readonly string SECCION_IMPORT_MODULOS_ANGULAR = "imports: [";
+
 
     }
 }

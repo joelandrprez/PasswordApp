@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cuentas.Backend.API.Controllers.Cuentas
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/v1/cuentas")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Cuentas")]
@@ -37,7 +37,9 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         [Route("")]
         public async Task<ActionResult> Registrar([FromBody] InCuenta cuenta)
         {
-            _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+            _usuario = "1";
+            //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+
             StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(_usuario));
             return StatusCode(Respuesta.Status, Respuesta);
         }
@@ -46,13 +48,14 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         [Route("{id}")]
         public async Task<ActionResult> Actualizar([FromBody] InCuenta cuenta, [FromRoute] int id)
         {
-            _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+            //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
+            _usuario = "joel";
             StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(_usuario));
             return StatusCode(Respuesta.Status, Respuesta);
         }
 
         [HttpGet]
-        [Route("password/{id}")]
+        [Route("cadena/{id}")]
         public async Task<ActionResult> getPassword(int id)
         {
             StatusResponse<OutCuenta> Respuesta = await _cuentaApp.GetPassword(id);

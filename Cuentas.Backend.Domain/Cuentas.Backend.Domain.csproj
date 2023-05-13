@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="GenerarApp\Domain\" />
-    <Folder Include="GenerarApp\Interfaces\" />
+    <Folder Include="GenerarProyecto\Domain\" />
+    <Folder Include="GenerarProyecto\Interfaces\" />
     <Folder Include="Auth\Domain\" />
     <Folder Include="Auth\Interfaces\" />
   </ItemGroup>

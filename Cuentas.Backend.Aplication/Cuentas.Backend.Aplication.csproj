@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HistorialActividades\**" />
+    <EmbeddedResource Remove="HistorialActividades\**" />
+    <None Remove="HistorialActividades\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
@@ -21,10 +27,6 @@
     <ProjectReference Include="..\Cuentas.Backend.Domain\Cuentas.Backend.Domain.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Infraestruture\Cuentas.Backend.Infraestruture.csproj" />
     <ProjectReference Include="..\Cuentas.Backend.Shared\Cuentas.Backend.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HistorialActividades\" />
   </ItemGroup>
 
 </Project>
