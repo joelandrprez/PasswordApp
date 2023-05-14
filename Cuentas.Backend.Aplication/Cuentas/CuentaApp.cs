@@ -33,6 +33,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
             if (!Respuesta.Satisfactorio)
                 Respuesta.Status = StatusCodes.Status500InternalServerError;
 
+            Respuesta.Titulo = Respuesta.Status == StatusCodes.Status200OK ? MaestraConstante.MENSAJE_OPERACION_EXITOSA: MaestraConstante.MENSAJE_ERROR_GENERICO;
             return Respuesta;
         }
 
@@ -197,23 +198,21 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
         public async Task<StatusResponse<OutCuenta>> GetPassword(int id)
         {
+            StatusResponse<OutCuenta> respuesta = new StatusResponse<OutCuenta>();
             StatusResponse<Cuenta> DatosUsuario = await this.ProcesoComplejo(() => _cuentaRepository.GetPassword(id));
 
             if (!DatosUsuario.Satisfactorio)
-                DatosUsuario.Status = StatusCodes.Status500InternalServerError;
+                return new StatusResponse<OutCuenta>(false,DatosUsuario.Titulo,DatosUsuario.Detalle,StatusCodes.Status500InternalServerError,DatosUsuario.Errores);
 
             if (DatosUsuario.Data == null)
-            {
-                DatosUsuario.Status = StatusCodes.Status400BadRequest;
-                DatosUsuario.Titulo = "No se pudo recuperar el dato de la cuenta";
-                DatosUsuario.Satisfactorio = false;
-            }
+                return new StatusResponse<OutCuenta>(false, "No se pudo recuperar el dato de la cuenta", "", StatusCodes.Status500InternalServerError, DatosUsuario.Errores);
+
 
             OutCuenta cuenta = new OutCuenta();
             cuenta.Cadena = DatosUsuario.Data.Password;
-            StatusResponse<OutCuenta> respuesta = new StatusResponse<OutCuenta>();
             respuesta.Data = cuenta;
             respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            respuesta.Detalle = "Se copio la contraseña";
 
             return respuesta;
         }
