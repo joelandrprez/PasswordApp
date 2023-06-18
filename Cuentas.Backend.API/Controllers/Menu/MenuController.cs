@@ -13,6 +13,7 @@ namespace Cuentas.Backend.API.Controllers.Menu
 {
     [Route("api/Menu")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Menu")]
     public class MenuController : ControllerBase
     {
         private readonly ILogger<MenuController> _logger;

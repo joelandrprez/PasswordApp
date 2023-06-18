@@ -41,18 +41,15 @@ builder.Services.AddWebEncoders();
 builder.Services.TryAddSingleton<ISystemClock, SystemClock>();
 //END::AddAuthentication.cs
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("*")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowAnyOrigin();
-                      });
+    options.AddPolicy("AllowOrigin", builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllers();
@@ -113,7 +110,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("AllowOrigin");
 
 app.UseHttpsRedirection();
 
