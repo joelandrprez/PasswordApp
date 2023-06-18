@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="GenerarProyecto\Domain\" />
-    <Folder Include="GenerarProyecto\Interfaces\" />
+    <Compile Remove="GenerarProyecto\**" />
+    <EmbeddedResource Remove="GenerarProyecto\**" />
+    <None Remove="GenerarProyecto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Auth\Domain\" />
     <Folder Include="Auth\Interfaces\" />
   </ItemGroup>

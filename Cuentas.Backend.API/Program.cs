@@ -17,7 +17,6 @@ using Cuentas.Backend.Domain.EstadoProyecto.Interfaces;
 using Cuentas.Backend.Aplication.Proyecto;
 using Cuentas.Backend.Infraestruture.Proyecto;
 using Cuentas.Backend.Domain.Proyectos.Interfaces;
-using Cuentas.Backend.Aplication.Generar;
 
 string AllAllowSpecificOrigins = "_AllAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -83,21 +82,19 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<ICustomConnection, CustomConnection>();
 
-builder.Services.AddTransient<CuentaApp>();
-builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();
+builder.Services.AddTransient<AccountApp>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.AddTransient<AuthApp>();
 
-builder.Services.AddTransient<UsuarioApp>();
+builder.Services.AddTransient<UserApp>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-builder.Services.AddTransient<EstadoProyectoApp>();
-builder.Services.AddScoped<IEstadoProyectoRepository, EstadoProyectoRepository>();
+builder.Services.AddTransient<ProjectStatusApp>();
+builder.Services.AddScoped<IProjectStatusRepository, ProjectStatusRepository>();
 
-builder.Services.AddTransient<ProyectoApp>();
-builder.Services.AddScoped<IProyectoRepository, ProyectoRepository>();
-
-builder.Services.AddTransient<GenerarApp>();
+builder.Services.AddTransient<ProjectApp>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 var app = builder.Build();
 
