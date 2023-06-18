@@ -22,7 +22,7 @@ namespace Cuentas.Backend.Aplication.Proyecto
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Paginacion<EProyecto>> Respuesta = await this.ComplexProcess(() => _proyectoRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Paginacion<EProyecto>> Respuesta = await this.ProcesoComplejo(() => _proyectoRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
             if (!Respuesta.Success)
                 Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
@@ -58,7 +58,7 @@ namespace Cuentas.Backend.Aplication.Proyecto
            proyetoDominio.FechaModificacion = FechaProceso;
            proyetoDominio.UsuarioModifica = creadoPor;
 
-           Respuesta = await this.SimpleProcess(() => _proyectoRepository.Registrar(proyetoDominio), "");
+           Respuesta = await this.ProcesoSimple(() => _proyectoRepository.Registrar(proyetoDominio), "");
 
            if (!Respuesta.Success)
            {
@@ -103,7 +103,7 @@ namespace Cuentas.Backend.Aplication.Proyecto
             proyetoDominio.UsuarioModifica = creadoPor;
 
 
-            Respuesta = await this.SimpleProcess(() => _proyectoRepository.Actualizar(proyetoDominio), "");
+            Respuesta = await this.ProcesoSimple(() => _proyectoRepository.Actualizar(proyetoDominio), "");
 
 
             if (!Respuesta.Success)

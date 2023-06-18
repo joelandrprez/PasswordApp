@@ -35,7 +35,7 @@ namespace Cuentas.Backend.Aplication.Usuario
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Paginacion<EUsuario>> Respuesta = await this.ComplexProcess(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Paginacion<EUsuario>> Respuesta = await this.ProcesoComplejo(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
             if (!Respuesta.Success)
                 Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
@@ -93,7 +93,7 @@ namespace Cuentas.Backend.Aplication.Usuario
                 if (ValidarExistencia.Data == MaestraConstante.ESTADO_USUARIO_EXISTE)
                     return new(false, "El usuario ya esta registrado", "", StatusCodes.Status400BadRequest);
 
-                Respuesta = await this.SimpleProcess(() => _usuarioRepository.Registrar(UsuarioRegistro, conexion, transaction), "");
+                Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Registrar(UsuarioRegistro, conexion, transaction), "");
 
                 if (!Respuesta.Success) {
                     Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
@@ -166,7 +166,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             try
             {
 
-                Respuesta = await this.SimpleProcess(() => _usuarioRepository.Actualizar(UsuarioRegistro, id, conexion, transaction), "");
+                Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Actualizar(UsuarioRegistro, id, conexion, transaction), "");
 
                 if (!Respuesta.Success)
                 {
@@ -205,7 +205,7 @@ namespace Cuentas.Backend.Aplication.Usuario
 
             StatusResponse<Domain.Usuario.Domain.EUsuario> Busqueda = new ();
             bool respuesta = MaestraConstante.ESTADO_USUARIO_NO_EXISTE;
-            Busqueda = await this.ComplexProcess(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuario(user, conexion, transaccion));
+            Busqueda = await this.ProcesoComplejo(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuario(user, conexion, transaccion));
 
             if (Busqueda.Data != null )
                 respuesta = MaestraConstante.ESTADO_USUARIO_EXISTE;          

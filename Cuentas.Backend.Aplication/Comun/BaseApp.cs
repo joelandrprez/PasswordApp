@@ -25,7 +25,7 @@ namespace Cuentas.Backend.Aplication.Comun
 
         }
 
-        protected async Task<StatusSimpleResponse> SimpleProcess(Func<Task> callback, string titulo)
+        protected async Task<StatusSimpleResponse> ProcesoSimple(Func<Task> callback, string titulo)
         {
             var response = new StatusSimpleResponse();
 
@@ -55,7 +55,7 @@ namespace Cuentas.Backend.Aplication.Comun
         }
 
 
-        protected async Task<StatusResponse<T>> ComplexProcess<T>(Func<Task<T>> callbackData, string titulo = "")
+        protected async Task<StatusResponse<T>> ProcesoComplejo<T>(Func<Task<T>> callbackData, string titulo = "")
         {
             var response = new StatusResponse<T>();
 

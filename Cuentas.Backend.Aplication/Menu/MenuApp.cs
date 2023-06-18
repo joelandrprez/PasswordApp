@@ -1,5 +1,6 @@
 ﻿using Cuentas.Backend.Aplication.Comun;
 using Cuentas.Backend.Domain.Menu.Domain;
+using Cuentas.Backend.Domain.Menu.DTO;
 using Cuentas.Backend.Domain.Menu.Interfaces;
 using Cuentas.Backend.Shared;
 using Microsoft.Extensions.Logging;
@@ -19,9 +20,9 @@ namespace Cuentas.Backend.Aplication.Menu
             this._menuRepository = menuRepository;
         }
 
-        public async Task<StatusResponse<List<EMenu>>> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<StatusResponse<List<OutMenu>>> List(int idUsuario)
         {
-            StatusResponse<List<EMenu>> respuesta = null;
+            StatusResponse<List<OutMenu>> respuesta = await this.ProcesoComplejo(() => _menuRepository.Listar(1));
 
             return respuesta;
         }

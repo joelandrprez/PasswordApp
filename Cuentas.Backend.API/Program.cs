@@ -17,6 +17,9 @@ using Cuentas.Backend.Domain.EstadoProyecto.Interfaces;
 using Cuentas.Backend.Aplication.Proyecto;
 using Cuentas.Backend.Infraestruture.Proyecto;
 using Cuentas.Backend.Domain.Proyectos.Interfaces;
+using Cuentas.Backend.Aplication.Menu;
+using Cuentas.Backend.Infraestruture.Menu;
+using Cuentas.Backend.Domain.Menu.Interfaces;
 
 string AllAllowSpecificOrigins = "_AllAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -95,6 +98,9 @@ builder.Services.AddScoped<IEstadoProyectoRepository, EstadoProyectoRepository>(
 
 builder.Services.AddTransient<ProyectoApp>();
 builder.Services.AddScoped<IProyectoRepository, ProyectoRepository>();
+
+builder.Services.AddTransient<MenuApp>();
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 
 var app = builder.Build();
 

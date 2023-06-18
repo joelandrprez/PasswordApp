@@ -28,7 +28,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Paginacion<ECuenta>> Respuesta = await this.ComplexProcess(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Paginacion<ECuenta>> Respuesta = await this.ProcesoComplejo(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
             if (!Respuesta.Success)
                 Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
@@ -81,7 +81,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
                 cuentaDominio.FechaModificacion = FechaProceso;
                 cuentaDominio.UsuarioModificacion = idUsuario;
 
-                Respuesta = await this.SimpleProcess(() => _usuarioRepository.Registrar(cuentaDominio, conexion, transaction), "");
+                Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Registrar(cuentaDominio, conexion, transaction), "");
 
                 if (!Respuesta.Success)
                 {
@@ -162,7 +162,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
             cuentaDominio.UsuarioModificacion = idUsuario;
 
 
-            Respuesta = await this.SimpleProcess(() => _usuarioRepository.Actualizar(cuentaDominio, conexion, transaction), "");
+            Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Actualizar(cuentaDominio, conexion, transaction), "");
 
             if (!Respuesta.Success)
             {
@@ -199,7 +199,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
         public async Task<StatusResponse<OutCuenta>> ObtenerPassword(int id)
         {
             StatusResponse<OutCuenta> respuesta = new StatusResponse<OutCuenta>();
-            StatusResponse<ECuenta> DatosUsuario = await this.ComplexProcess(() => _usuarioRepository.ObtenerPassword(id));
+            StatusResponse<ECuenta> DatosUsuario = await this.ProcesoComplejo(() => _usuarioRepository.ObtenerPassword(id));
 
             if (!DatosUsuario.Success)
                 return new StatusResponse<OutCuenta>(false,DatosUsuario.Title,DatosUsuario.Detail,StatusCodes.Status500InternalServerError,DatosUsuario.Errors);

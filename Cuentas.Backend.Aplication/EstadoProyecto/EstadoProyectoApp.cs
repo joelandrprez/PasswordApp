@@ -28,7 +28,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Paginacion<EEstadoProyecto>> Respuesta = await this.ComplexProcess(() => _statusProjectRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Paginacion<EEstadoProyecto>> Respuesta = await this.ProcesoComplejo(() => _statusProjectRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
             if (!Respuesta.Success)
                 Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
@@ -76,7 +76,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             try
             {
 
-                Respuesta = await this.SimpleProcess(() => _statusProjectRepository.Registrar(EstadoProyecto, conexion, transaction), "");
+                Respuesta = await this.ProcesoSimple(() => _statusProjectRepository.Registrar(EstadoProyecto, conexion, transaction), "");
 
                 if (!Respuesta.Success)
                 {
@@ -153,7 +153,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             try
             {
 
-                Respuesta = await this.SimpleProcess(() => _statusProjectRepository.Actualizar(EstadoProyecto, conexion, transaction), "");
+                Respuesta = await this.ProcesoSimple(() => _statusProjectRepository.Actualizar(EstadoProyecto, conexion, transaction), "");
 
                 if (!Respuesta.Success)
                 {

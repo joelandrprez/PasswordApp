@@ -45,7 +45,7 @@ namespace Cuentas.Backend.Aplication.Token
             if (!resultadoValidacion.IsValid)
                 return new StatusResponse<OutUsuario>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
 
-            StatusResponse<EUsuario> Validacion = await this.ComplexProcess(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
+            StatusResponse<EUsuario> Validacion = await this.ProcesoComplejo(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
 
             if (!Validacion.Success )
                 return new StatusResponse<OutUsuario>(false,Validacion.Title,Validacion.Detail, StatusCodes.Status500InternalServerError);
