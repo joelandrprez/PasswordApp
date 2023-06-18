@@ -88,7 +88,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddTransient<AuthApp>();
 
 builder.Services.AddTransient<UserApp>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUserRepository, UsuarioRepository>();
 
 builder.Services.AddTransient<ProjectStatusApp>();
 builder.Services.AddScoped<IProjectStatusRepository, ProjectStatusRepository>();

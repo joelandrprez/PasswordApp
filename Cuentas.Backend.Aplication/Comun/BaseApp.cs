@@ -25,7 +25,7 @@ namespace Cuentas.Backend.Aplication.Comun
 
         }
 
-        protected async Task<StatusSimpleResponse> ProcesoSimple(Func<Task> callback, string titulo)
+        protected async Task<StatusSimpleResponse> SimpleProcess(Func<Task> callback, string titulo)
         {
             var response = new StatusSimpleResponse();
 
@@ -33,29 +33,29 @@ namespace Cuentas.Backend.Aplication.Comun
             {
                 await callback();
 
-                response.Satisfactorio = true;
-                response.Titulo = titulo;
+                response.Success = true;
+                response.Title = titulo;
             }
             catch (CustomException customEx)
             {
                 this._logger.LogError(customEx, "Id: {0}", response.Id);
-                response.Satisfactorio = false;
-                response.Titulo = customEx.Titulo;
-                response.Detalle = customEx.ToString();
+                response.Success = false;
+                response.Title = customEx.Titulo;
+                response.Detail = customEx.ToString();
             }
             catch (Exception ex)
             {
                 this._logger.LogError(ex, "Id: {0}", response.Id);
-                response.Satisfactorio = false;
-                response.Titulo = "Sucedió un error inesperado.";
-                response.Detalle = ex.ToString();
+                response.Success = false;
+                response.Title = "Sucedió un error inesperado.";
+                response.Detail = ex.ToString();
             }
 
             return response;
         }
 
 
-        protected async Task<StatusResponse<T>> ProcesoComplejo<T>(Func<Task<T>> callbackData, string titulo = "")
+        protected async Task<StatusResponse<T>> ComplexProcess<T>(Func<Task<T>> callbackData, string titulo = "")
         {
             var response = new StatusResponse<T>();
 
@@ -63,23 +63,23 @@ namespace Cuentas.Backend.Aplication.Comun
             {
                 response.Data = await callbackData();
 
-                response.Titulo = titulo;
-                response.Satisfactorio = true;
+                response.Title = titulo;
+                response.Success = true;
             }
             catch (CustomException customEx)
             {
                 this._logger.LogError(customEx, "Id: {0}", response.Id);
-                response.Titulo = customEx.Titulo;
-                response.Detalle = customEx.ToString();
-                response.Satisfactorio = false;
+                response.Title = customEx.Titulo;
+                response.Detail = customEx.ToString();
+                response.Success = false;
                 //response.Errores = cuEx.Errores
             }
             catch (Exception ex)
             {
                 this._logger.LogError(ex, "Id: {0}", response.Id);
-                response.Titulo = "Sucedió un error inesperado.";
-                response.Detalle = ex.ToString();
-                response.Satisfactorio = false;
+                response.Title = "Sucedió un error inesperado.";
+                response.Detail = ex.ToString();
+                response.Success = false;
             }
 
             return response;
@@ -102,7 +102,7 @@ namespace Cuentas.Backend.Aplication.Comun
             }
             return result;
         }
-        protected SqlConnection ConexionParaTransaccion()
+        protected SqlConnection ConectionToTransaction()
         {
             return new SqlConnection(_connectionString);
         }

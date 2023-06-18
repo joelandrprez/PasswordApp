@@ -11,11 +11,11 @@ namespace Cuentas.Backend.Domain.EstadoProyecto.Interfaces
 {
     public interface IProjectStatusRepository
     {
-        Task Registrar(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion);
+        Task Save(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion);
 
-        Task Actualizar(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion);
+        Task Update(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion);
 
-        Task<Pagination<EProjectStatus>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
+        Task<Pagination<EProjectStatus>> List(int page, int size, string? search, string? orderBy, string? orderDir);
 
     }
 }

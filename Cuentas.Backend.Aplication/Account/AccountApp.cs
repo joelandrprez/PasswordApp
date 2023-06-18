@@ -17,40 +17,40 @@ namespace Cuentas.Backend.Aplication.Cuentas
 {
     public class AccountApp : BaseApp<AccountApp>
     {
-        private readonly IAccountRepository _cuentaRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountApp(ILogger<BaseApp<AccountApp>> logger, IAccountRepository cuentaRepository, IConfiguration configuration): base(logger, configuration)
+        public AccountApp(ILogger<BaseApp<AccountApp>> logger, IAccountRepository accountRepository, IConfiguration configuration): base(logger, configuration)
         {
-            _cuentaRepository = cuentaRepository;
+            _accountRepository = accountRepository;
         }
 
-        public async Task<StatusResponse<Pagination<EAccount>>> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<StatusResponse<Pagination<EAccount>>> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Pagination<EAccount>> Respuesta = await this.ProcesoComplejo(() => _cuentaRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Pagination<EAccount>> Respuesta = await this.ComplexProcess(() => _accountRepository.List(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Satisfactorio)
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Success)
+                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
 
-            Respuesta.Titulo = Respuesta.Status == StatusCodes.Status200OK ? MaestraConstante.MENSAJE_OPERACION_EXITOSA: MaestraConstante.MENSAJE_ERROR_GENERICO;
+            Respuesta.Title = Respuesta.StatusCode == StatusCodes.Status200OK ? MaestraConstante.MENSAJE_OPERACION_EXITOSA: MaestraConstante.MENSAJE_ERROR_GENERICO;
             return Respuesta;
         }
 
-        public async Task<StatusSimpleResponse> Registrar(InAccount cuenta,int idUsuarioProceso) {
+        public async Task<StatusSimpleResponse> Save(InAccount account,int idAccountProccess) {
             DateTime FechaRegistro = DateTime.Now;
 
             StatusSimpleResponse Respuesta = new StatusSimpleResponse(false,"");
             InCuentaValidator ValidacionCampos = new InCuentaValidator();
-            ValidationResult ResultadoValidacion = ValidacionCampos.Validate(cuenta);
+            ValidationResult ResultadoValidacion = ValidacionCampos.Validate(account);
             DateTime FechaProceso = DateTime.Now;
 
             if (!ResultadoValidacion.IsValid) {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Titulo = "Los datos enviados no son válidos";
-                Respuesta.Errores = this.GetErrors(ResultadoValidacion.Errors);
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
+                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
+                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -59,7 +59,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
             try
             {
-                conexion = this.ConexionParaTransaccion();
+                conexion = this.ConectionToTransaction();
                 conexion.Open();
                 transaction = conexion.BeginTransaction();
             }
@@ -70,22 +70,22 @@ namespace Cuentas.Backend.Aplication.Cuentas
             try {
 
                 EAccount cuentaDominio = new();
-                cuentaDominio.TipoCuenta_Id = cuenta.TipoCuenta_Id;
-                cuentaDominio.Sitio = cuenta.Sitio;
-                cuentaDominio.Usuario = cuenta.Usuario;
-                cuentaDominio.Password = cuenta.Password;
-                cuentaDominio.Usuario_Id = idUsuarioProceso;
-                cuentaDominio.Proyecto_Id = cuenta.Proyecto_Id;
+                cuentaDominio.TipoCuenta_Id = account.TipoCuenta_Id;
+                cuentaDominio.Sitio = account.Sitio;
+                cuentaDominio.Usuario = account.Usuario;
+                cuentaDominio.Password = account.Password;
+                cuentaDominio.Usuario_Id = idAccountProccess;
+                cuentaDominio.Proyecto_Id = account.Proyecto_Id;
                 cuentaDominio.FechaCreacion = FechaProceso;
-                cuentaDominio.UsuarioCrea = idUsuarioProceso;
+                cuentaDominio.UsuarioCrea = idAccountProccess;
                 cuentaDominio.FechaModificacion = FechaProceso;
-                cuentaDominio.UsuarioModificacion = idUsuarioProceso;
+                cuentaDominio.UsuarioModificacion = idAccountProccess;
 
-                Respuesta = await this.ProcesoSimple(() => _cuentaRepository.Registrar(cuentaDominio, conexion, transaction), "");
+                Respuesta = await this.SimpleProcess(() => _accountRepository.Save(cuentaDominio, conexion, transaction), "");
 
-                if (!Respuesta.Satisfactorio)
+                if (!Respuesta.Success)
                 {
-                    Respuesta.Status = StatusCodes.Status500InternalServerError;
+                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -109,26 +109,26 @@ namespace Cuentas.Backend.Aplication.Cuentas
                 }
             }
 
-            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Satisfactorio = true;
+            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Success = true;
             return Respuesta;
         
         }
 
-        public async Task<StatusSimpleResponse> Actualizar(InAccount cuenta,int id,int idUsuarioProceso)
+        public async Task<StatusSimpleResponse> Update(InAccount account,int id,int idAccountProccess)
         {
             StatusSimpleResponse Respuesta = new StatusSimpleResponse(false, "");
 
             InCuentaValidator ValidacionCampos = new InCuentaValidator();
-            ValidationResult ResultadoValidacion = ValidacionCampos.Validate(cuenta);
+            ValidationResult ResultadoValidacion = ValidacionCampos.Validate(account);
             DateTime FechaProceso = DateTime.Now;
 
             if (!ResultadoValidacion.IsValid)
             {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Titulo = "Los datos enviados no son válidos";
-                Respuesta.Errores = this.GetErrors(ResultadoValidacion.Errors);
+                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
                 return Respuesta;
             }
 
@@ -137,7 +137,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
             try
             {
-                conexion = this.ConexionParaTransaccion();
+                conexion = this.ConectionToTransaction();
                 conexion.Open();
                 transaction = conexion.BeginTransaction();
             }
@@ -150,23 +150,23 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
             EAccount cuentaDominio = new();
             cuentaDominio.Id = id;
-            cuentaDominio.TipoCuenta_Id = cuenta.TipoCuenta_Id;
-            cuentaDominio.Sitio = cuenta.Sitio;
-            cuentaDominio.Usuario = cuenta.Usuario;
-            cuentaDominio.Password = cuenta.Password;
-            cuentaDominio.Usuario_Id = idUsuarioProceso;
-            cuentaDominio.Proyecto_Id = cuenta.Proyecto_Id;
+            cuentaDominio.TipoCuenta_Id = account.TipoCuenta_Id;
+            cuentaDominio.Sitio = account.Sitio;
+            cuentaDominio.Usuario = account.Usuario;
+            cuentaDominio.Password = account.Password;
+            cuentaDominio.Usuario_Id = idAccountProccess;
+            cuentaDominio.Proyecto_Id = account.Proyecto_Id;
             cuentaDominio.FechaCreacion = FechaProceso;
-            cuentaDominio.UsuarioCrea = idUsuarioProceso;
+            cuentaDominio.UsuarioCrea = idAccountProccess;
             cuentaDominio.FechaModificacion = FechaProceso;
-            cuentaDominio.UsuarioModificacion = idUsuarioProceso;
+            cuentaDominio.UsuarioModificacion = idAccountProccess;
 
 
-            Respuesta = await this.ProcesoSimple(() => _cuentaRepository.Actualizar(cuentaDominio, conexion, transaction), "");
+            Respuesta = await this.SimpleProcess(() => _accountRepository.Update(cuentaDominio, conexion, transaction), "");
 
-            if (!Respuesta.Satisfactorio)
+            if (!Respuesta.Success)
             {
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
+                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -190,8 +190,8 @@ namespace Cuentas.Backend.Aplication.Cuentas
                 }
             }
 
-            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Satisfactorio = true;
+            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Success = true;
             return Respuesta;
 
         }
@@ -199,20 +199,20 @@ namespace Cuentas.Backend.Aplication.Cuentas
         public async Task<StatusResponse<OutAccount>> GetPassword(int id)
         {
             StatusResponse<OutAccount> respuesta = new StatusResponse<OutAccount>();
-            StatusResponse<EAccount> DatosUsuario = await this.ProcesoComplejo(() => _cuentaRepository.GetPassword(id));
+            StatusResponse<EAccount> DatosUsuario = await this.ComplexProcess(() => _accountRepository.GetPassword(id));
 
-            if (!DatosUsuario.Satisfactorio)
-                return new StatusResponse<OutAccount>(false,DatosUsuario.Titulo,DatosUsuario.Detalle,StatusCodes.Status500InternalServerError,DatosUsuario.Errores);
+            if (!DatosUsuario.Success)
+                return new StatusResponse<OutAccount>(false,DatosUsuario.Title,DatosUsuario.Detail,StatusCodes.Status500InternalServerError,DatosUsuario.Errors);
 
             if (DatosUsuario.Data == null)
-                return new StatusResponse<OutAccount>(false, "No se pudo recuperar el dato de la cuenta", "", StatusCodes.Status500InternalServerError, DatosUsuario.Errores);
+                return new StatusResponse<OutAccount>(false, "No se pudo recuperar el dato de la cuenta", "", StatusCodes.Status500InternalServerError, DatosUsuario.Errors);
 
 
             OutAccount cuenta = new OutAccount();
             cuenta.Cadena = DatosUsuario.Data.Password;
             respuesta.Data = cuenta;
-            respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            respuesta.Detalle = "Se copio la contraseña";
+            respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            respuesta.Detail = "Se copio la contraseña";
 
             return respuesta;
         }

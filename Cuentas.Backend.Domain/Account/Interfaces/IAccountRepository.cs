@@ -12,9 +12,9 @@ namespace Cuentas.Backend.Domain.Cuentas.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<Pagination<EAccount>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
-        Task Registrar(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion);
-        Task Actualizar(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion);
+        Task<Pagination<EAccount>> List(int page, int size, string? search, string? orderBy, string? orderDir);
+        Task Save(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion);
+        Task Update(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion);
         Task<EAccount> GetPassword(int id);
     }
 }

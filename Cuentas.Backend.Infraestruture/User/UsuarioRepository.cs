@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Cuentas.Backend.Infraestruture.Usuario
 {
-    public class UsuarioRepository : IUsuarioRepository
+    public class UsuarioRepository : IUserRepository
     {
         private readonly ICustomConnection _connection;
 
@@ -21,7 +21,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             this._connection = connection;
         }
 
-        public async Task Registrar(Domain.Usuario.Domain.UsuarioPortal usuario, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Registrar(Domain.Usuario.Domain.EUser usuario, SqlConnection conexion, SqlTransaction transaccion)
         {
             try {
                 DynamicParameters parametros = new DynamicParameters();
@@ -40,7 +40,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             }
         }
 
-        public async Task Actualizar(Domain.Usuario.Domain.UsuarioPortal usuario, int id, SqlConnection conexion, SqlTransaction transaccion) {
+        public async Task Actualizar(Domain.Usuario.Domain.EUser usuario, int id, SqlConnection conexion, SqlTransaction transaccion) {
             try
             {
                 DynamicParameters parametros = new DynamicParameters();
@@ -59,15 +59,15 @@ namespace Cuentas.Backend.Infraestruture.Usuario
         }
 
 
-        public async Task<UsuarioPortal> ValidarExistenciaDeNombreDeUsuario(string nombreUsuario, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task<EUser> ValidarExistenciaDeNombreDeUsuario(string nombreUsuario, SqlConnection conexion, SqlTransaction transaccion)
         {
-            UsuarioPortal Usuario = new();
+            EUser Usuario = new();
             try
             {
                 DynamicParameters parametros = new DynamicParameters();
                 parametros.Add("Usuario", nombreUsuario);
 
-                Usuario = await conexion.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarUsuario", parametros, transaccion, commandType: CommandType.StoredProcedure);
+                Usuario = await conexion.QueryFirstOrDefaultAsync<EUser>("SEL_BuscarUsuario", parametros, transaccion, commandType: CommandType.StoredProcedure);
 
             }
             catch (Exception ex)
@@ -76,9 +76,9 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             }
             return Usuario;
         }
-        public async Task<UsuarioPortal> ValidarExistenciaDeNombreDeUsuarioSinTransaccion(string nombreUsuario)
+        public async Task<EUser> ValidarExistenciaDeNombreDeUsuarioSinTransaccion(string nombreUsuario)
         {
-            UsuarioPortal Usuario = new();
+            EUser Usuario = new();
 
            DynamicParameters parametros = new DynamicParameters();
            parametros.Add("Usuario", nombreUsuario);
@@ -87,7 +87,7 @@ namespace Cuentas.Backend.Infraestruture.Usuario
            {
                try
                {
-                   Usuario = await scope.QueryFirstOrDefaultAsync<UsuarioPortal>("SEL_BuscarUsuario", parametros, commandType: CommandType.StoredProcedure);
+                   Usuario = await scope.QueryFirstOrDefaultAsync<EUser>("SEL_BuscarUsuario", parametros, commandType: CommandType.StoredProcedure);
 
                }
                catch (Exception ex)
@@ -100,9 +100,9 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             return Usuario;
         }
 
-        public async Task<Pagination<UsuarioPortal>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        public async Task<Pagination<EUser>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
         {
-            Pagination<UsuarioPortal> paginacion = null;
+            Pagination<EUser> paginacion = null;
             DynamicParameters dinamycParams = new DynamicParameters();
             dinamycParams.Add("Page", page);
             dinamycParams.Add("Size", size);
@@ -115,9 +115,9 @@ namespace Cuentas.Backend.Infraestruture.Usuario
             {
                 try
                 {
-                    paginacion = new Pagination<UsuarioPortal>();
+                    paginacion = new Pagination<EUser>();
 
-                    IEnumerable<UsuarioPortal> records = await scope.QueryAsync<UsuarioPortal>(
+                    IEnumerable<EUser> records = await scope.QueryAsync<EUser>(
                         "SEL_ListarUsuarios", dinamycParams, commandType: CommandType.StoredProcedure);
 
                     paginacion.Records = records;

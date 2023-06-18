@@ -27,31 +27,31 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<ActionResult> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
-            StatusResponse<Pagination<EAccount>> Respuesta = await _cuentaApp.Listar(page,size,search,orderBy,orderDir);
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusResponse<Pagination<EAccount>> Respuesta = await _cuentaApp.List(page,size,search,orderBy,orderDir);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> Registrar([FromBody] InAccount cuenta)
+        public async Task<ActionResult> Save([FromBody] InAccount cuenta)
         {
             _usuario = "1";
             //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
 
-            StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(_usuario));
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusSimpleResponse Respuesta = await _cuentaApp.Save(cuenta,int.Parse(_usuario));
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult> Actualizar([FromBody] InAccount cuenta, [FromRoute] int id)
+        public async Task<ActionResult> Update([FromBody] InAccount cuenta, [FromRoute] int id)
         {
             //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
             _usuario = "joel";
-            StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(_usuario));
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusSimpleResponse Respuesta = await _cuentaApp.Update(cuenta,id, int.Parse(_usuario));
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpGet]
@@ -59,7 +59,7 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         public async Task<ActionResult> getPassword(int id)
         {
             StatusResponse<OutAccount> Respuesta = await _cuentaApp.GetPassword(id);
-            return StatusCode(Respuesta.Status, Respuesta);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
     }
 }

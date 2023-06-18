@@ -27,7 +27,7 @@ namespace Cuentas.Backend.Infraestruture.Cuentas
 
         }
 
-        public async Task Actualizar(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Update(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Cuentas.Backend.Infraestruture.Cuentas
             }
         }
 
-        public async Task Registrar(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Save(EAccount cuenta, SqlConnection conexion, SqlTransaction transaccion)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Cuentas.Backend.Infraestruture.Cuentas
             }
         }
 
-        public async Task<Pagination<EAccount>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        public async Task<Pagination<EAccount>> List(int page, int size, string? search, string? orderBy, string? orderDir)
         {
             Pagination<EAccount> paginacion = null;
             DynamicParameters dinamycParams = new DynamicParameters();

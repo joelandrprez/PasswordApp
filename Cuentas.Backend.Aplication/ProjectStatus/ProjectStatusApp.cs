@@ -17,52 +17,54 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
 {
     public class ProjectStatusApp : BaseApp<ProjectStatusApp>
     {
-        private readonly IProjectStatusRepository _estadoProyectoRepository;
+        private readonly IProjectStatusRepository _statusProjectRepository;
 
-        public ProjectStatusApp(ILogger<BaseApp<ProjectStatusApp>> logger, IConfiguration configuracion, IProjectStatusRepository estadoProyectoRepository) : base(logger, configuracion)
+        public ProjectStatusApp(ILogger<BaseApp<ProjectStatusApp>> logger, IConfiguration configuration, IProjectStatusRepository statusProjectRepository) : base(logger, configuration)
         {
-            _estadoProyectoRepository = estadoProyectoRepository;
+            _statusProjectRepository = statusProjectRepository;
         }
-        public async Task<StatusResponse<Pagination<EProjectStatus>>> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+
+        public async Task<StatusResponse<Pagination<EProjectStatus>>> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             page = page ?? 1;
             size = size ?? 10;
-            StatusResponse<Pagination<EProjectStatus>> Respuesta = await this.ProcesoComplejo(() => _estadoProyectoRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
+            StatusResponse<Pagination<EProjectStatus>> Respuesta = await this.ComplexProcess(() => _statusProjectRepository.List(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Satisfactorio)
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Success)
+                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
 
             return Respuesta;
         }
-        public async Task<StatusSimpleResponse> Registrar(InProjectStatus estadoProyecto, string creadoPor)
+
+        public async Task<StatusSimpleResponse> Save(InProjectStatus statusProject, string createdBy)
         {
             StatusSimpleResponse Respuesta = new StatusSimpleResponse();
             InEstadoProyectoValidator validator = new InEstadoProyectoValidator();
-            ValidationResult result = validator.Validate(estadoProyecto);
+            ValidationResult result = validator.Validate(statusProject);
             if (!result.IsValid)
             {
-                Respuesta.Satisfactorio = false;
-                Respuesta.Titulo = "Los datos enviados no son válidos";
-                Respuesta.Errores = this.GetErrors(result.Errors);
-                Respuesta.Status = StatusCodes.Status400BadRequest;
+                Respuesta.Success = false;
+                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Errors = this.GetErrors(result.Errors);
+                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
             DateTime FechaOperacion = DateTime.Now;
             EProjectStatus EstadoProyecto = new();
-            EstadoProyecto.Estado = estadoProyecto.Estado;
-            EstadoProyecto.Descripcion = estadoProyecto.Descripcion;
+            EstadoProyecto.Estado = statusProject.Estado;
+            EstadoProyecto.Descripcion = statusProject.Descripcion;
             EstadoProyecto.FechaModificacion = FechaOperacion;
-            EstadoProyecto.UsuarioCrea = int.Parse(creadoPor);
+            EstadoProyecto.UsuarioCrea = int.Parse(createdBy);
             EstadoProyecto.FechaCreacion = FechaOperacion;
-            EstadoProyecto.UsuarioModifica = int.Parse(creadoPor);
+            EstadoProyecto.UsuarioModifica = int.Parse(createdBy);
 
             SqlConnection conexion = new();
             SqlTransaction transaction = null;
 
             try
             {
-                conexion = this.ConexionParaTransaccion();
+                conexion = this.ConectionToTransaction();
                 conexion.Open();
                 transaction = conexion.BeginTransaction();
             }
@@ -74,11 +76,11 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             try
             {
 
-                Respuesta = await this.ProcesoSimple(() => _estadoProyectoRepository.Registrar(EstadoProyecto, conexion, transaction), "");
+                Respuesta = await this.SimpleProcess(() => _statusProjectRepository.Save(EstadoProyecto, conexion, transaction), "");
 
-                if (!Respuesta.Satisfactorio)
+                if (!Respuesta.Success)
                 {
-                    Respuesta.Status = StatusCodes.Status500InternalServerError;
+                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -105,30 +107,30 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             }
 
 
-            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
-        public async Task<StatusSimpleResponse> Actualizar(InProjectStatus estadoProyecto,int id, string creadoPor)
+        public async Task<StatusSimpleResponse> Update(InProjectStatus statusProject,int id, string creadoPor)
         {
 
             StatusSimpleResponse Respuesta = new StatusSimpleResponse();
             InEstadoProyectoValidator validator = new InEstadoProyectoValidator();
-            ValidationResult result = validator.Validate(estadoProyecto);
+            ValidationResult result = validator.Validate(statusProject);
             if (!result.IsValid)
             {
-                Respuesta.Satisfactorio = false;
-                Respuesta.Titulo = "Los datos enviados no son válidos";
-                Respuesta.Errores = this.GetErrors(result.Errors);
-                Respuesta.Status = StatusCodes.Status400BadRequest;
+                Respuesta.Success = false;
+                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Errors = this.GetErrors(result.Errors);
+                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
             DateTime FechaOperacion = DateTime.Now;
             EProjectStatus EstadoProyecto = new();
             EstadoProyecto.Id = id;
-            EstadoProyecto.Estado = estadoProyecto.Estado;
-            EstadoProyecto.Descripcion = estadoProyecto.Descripcion;
+            EstadoProyecto.Estado = statusProject.Estado;
+            EstadoProyecto.Descripcion = statusProject.Descripcion;
             EstadoProyecto.FechaModificacion = FechaOperacion;
             EstadoProyecto.UsuarioCrea = int.Parse(creadoPor);
             EstadoProyecto.FechaCreacion = FechaOperacion;
@@ -139,7 +141,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
 
             try
             {
-                conexion = this.ConexionParaTransaccion();
+                conexion = this.ConectionToTransaction();
                 conexion.Open();
                 transaction = conexion.BeginTransaction();
             }
@@ -151,11 +153,11 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             try
             {
 
-                Respuesta = await this.ProcesoSimple(() => _estadoProyectoRepository.Actualizar(EstadoProyecto, conexion, transaction), "");
+                Respuesta = await this.SimpleProcess(() => _statusProjectRepository.Update(EstadoProyecto, conexion, transaction), "");
 
-                if (!Respuesta.Satisfactorio)
+                if (!Respuesta.Success)
                 {
-                    Respuesta.Status = StatusCodes.Status500InternalServerError;
+                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -182,9 +184,10 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             }
 
 
-            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
     }
 }
+

@@ -9,73 +9,73 @@ namespace Cuentas.Backend.Shared
     public class StatusSimpleResponse
     {
         public Guid Id { get; set; }
-        public bool Satisfactorio { get; set; }
-        public string Titulo { get; set; }
-        public string Detalle { get; set; }
-        public int Status { get ; set; }
-        public Dictionary<string, List<string>> Errores { get; set; }
+        public bool Success { get; set; }
+        public string Title { get; set; }
+        public string Detail { get; set; }
+        public int StatusCode { get ; set; }
+        public Dictionary<string, List<string>> Errors { get; set; }
 
 
         public StatusSimpleResponse() : this(true, "")
         {
             this.Id = Guid.NewGuid();
-            this.Titulo = null;
-            this.Detalle = null;
-            this.Status = 200;
+            this.Title = null;
+            this.Detail = null;
+            this.StatusCode = 200;
 
         }
 
         public StatusSimpleResponse(bool satisfactorio, string titulo)
         {
             this.Id = Guid.NewGuid();
-            this.Satisfactorio = satisfactorio;
-            this.Titulo = titulo;
-            this.Status = 200;
+            this.Success = satisfactorio;
+            this.Title = titulo;
+            this.StatusCode = 200;
         }
 
         public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle)
         {
             this.Id = Guid.NewGuid();
-            this.Satisfactorio = satisfactorio;
-            this.Titulo = titulo;
-            this.Detalle = detalle;
-            this.Status = 200;
+            this.Success = satisfactorio;
+            this.Title = titulo;
+            this.Detail = detalle;
+            this.StatusCode = 200;
         }
         public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle,int status)
         {
             this.Id = Guid.NewGuid();
-            this.Satisfactorio = satisfactorio;
-            this.Titulo = titulo;
-            this.Detalle = detalle;
-            this.Status = status;
+            this.Success = satisfactorio;
+            this.Title = titulo;
+            this.Detail = detalle;
+            this.StatusCode = status;
         }
-        public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle, int status, Dictionary<string, List<string>> errores) 
+        public StatusSimpleResponse(bool satisfactorio, string titulo, string detalle, int status, Dictionary<string, List<string>> errors) 
         {
             this.Id = Guid.NewGuid();
-            this.Satisfactorio = satisfactorio;
-            this.Titulo = titulo;
-            this.Detalle = detalle;
-            this.Status = status;
-            this.Errores = errores;
-        }
-
-        public StatusSimpleResponse(string titulo, Dictionary<string, List<string>> errores)
-        {
-            this.Id = Guid.NewGuid();
-            this.Satisfactorio = false;
-            this.Titulo = titulo;
-            this.Errores = errores;
-            this.Status = 200;
+            this.Success = satisfactorio;
+            this.Title = titulo;
+            this.Detail = detalle;
+            this.StatusCode = status;
+            this.Errors = errors;
         }
 
-        public StatusSimpleResponse(string titulo, string detalle, Dictionary<string, List<string>> errores)
+        public StatusSimpleResponse(string titulo, Dictionary<string, List<string>> errors)
         {
             this.Id = Guid.NewGuid();
-            this.Satisfactorio = false;
-            this.Titulo = titulo;
-            this.Detalle = detalle;
-            this.Errores = errores;
-            this.Status = 200;
+            this.Success = false;
+            this.Title = titulo;
+            this.Errors = errors;
+            this.StatusCode = 200;
+        }
+
+        public StatusSimpleResponse(string titulo, string detalle, Dictionary<string, List<string>> errors)
+        {
+            this.Id = Guid.NewGuid();
+            this.Success = false;
+            this.Title = titulo;
+            this.Detail = detalle;
+            this.Errors = errors;
+            this.StatusCode = 200;
         }
     }
 }

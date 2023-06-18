@@ -25,28 +25,28 @@ namespace Cuentas.Backend.API.Controllers.Usuario
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<ActionResult> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
-            StatusResponse<Pagination<UsuarioPortal>> Respuesta = await _usuarioApp.Listar(page, size, search, orderBy, orderDir);
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusResponse<Pagination<EUser>> Respuesta = await _usuarioApp.Listar(page, size, search, orderBy, orderDir);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> Registrar([FromBody] InUsuario cuenta)
+        public async Task<ActionResult> Save([FromBody] InUser cuenta)
         {
             _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _usuarioApp.Registrar(cuenta, _usuario);
-            return StatusCode(Respuesta.Status, Respuesta); 
+            return StatusCode(Respuesta.StatusCode, Respuesta); 
         }
 
         [HttpPut]
         [Route("{Id}")]
-        public async Task<ActionResult> Actualizar([FromBody] InUsuario cuenta,[FromRoute]int Id)
+        public async Task<ActionResult> Update([FromBody] InUser cuenta,[FromRoute]int Id)
         {
             _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _usuarioApp.Actualizar(cuenta, Id, _usuario);
-            return StatusCode(Respuesta.Status, Respuesta);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
     }

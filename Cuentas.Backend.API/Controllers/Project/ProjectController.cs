@@ -27,28 +27,28 @@ namespace Cuentas.Backend.API.Controllers.Proyecto
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<ActionResult> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
-            StatusResponse<Pagination<Project>> Respuesta = await _proyectoApp.Listar(page, size, search, orderBy, orderDir);
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusResponse<Pagination<Project>> Respuesta = await _proyectoApp.List(page, size, search, orderBy, orderDir);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> Registrar([FromBody] InProject cuenta)
+        public async Task<ActionResult> Save([FromBody] InProject cuenta)
         {
             string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
-            StatusSimpleResponse Respuesta = await _proyectoApp.Registrar(cuenta, int.Parse(CreadoPor));
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusSimpleResponse Respuesta = await _proyectoApp.Save(cuenta, int.Parse(CreadoPor));
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult> Actualizar([FromBody] InProject cuenta, [FromRoute] int id)
+        public async Task<ActionResult> Update([FromBody] InProject cuenta, [FromRoute] int id)
         {
             string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
-            StatusSimpleResponse Respuesta = await _proyectoApp.Actualizar(cuenta, id, int.Parse(CreadoPor));
-            return StatusCode(Respuesta.Status, Respuesta);
+            StatusSimpleResponse Respuesta = await _proyectoApp.Update(cuenta, id, int.Parse(CreadoPor));
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
     }
 }

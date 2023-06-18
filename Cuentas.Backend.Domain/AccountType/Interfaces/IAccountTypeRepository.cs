@@ -11,7 +11,7 @@ namespace Cuentas.Backend.Domain.Tipocuentas.Interfaces
 {
     public interface IAccountTypeRepository
     {
-        Task<Pagination<EAccountType>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
+        Task<Pagination<EAccountType>> List(int page, int size, string? search, string? orderBy, string? orderDir);
 
     }
 }

@@ -22,11 +22,11 @@ namespace Cuentas.Backend.API.Controllers.Token
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult> Login([FromBody] InUsuario usuario)
+        public async Task<ActionResult> Login([FromBody] InUser usuario)
         {
-            StatusResponse<OutUsuarioLogeado> Respuesta = await _authApp.Login(usuario);
+            StatusResponse<OutUser> Respuesta = await _authApp.Login(usuario);
 
-            return StatusCode(Respuesta.Status, Respuesta);
+            return StatusCode(Respuesta.StatusCode, Respuesta);
         }
 
     }

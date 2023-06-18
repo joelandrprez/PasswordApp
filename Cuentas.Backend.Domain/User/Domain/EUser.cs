@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cuentas.Backend.Domain.Usuario.Domain
 {
-    public class UsuarioPortal
+    public class EUser
     {
         public int Id { get; set; }
         public string Usuario { get; set; }

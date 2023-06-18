@@ -23,59 +23,59 @@ namespace Cuentas.Backend.Aplication.Token
         private string _key = string.Empty;
         private string _issuer = string.Empty;
         private string _audience = string.Empty;
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUserRepository _userRepository;
         private const int Pbkdf2Iterations = 1000;
 
-        public AuthApp(ILogger<BaseApp<AuthApp>> logger, IConfiguration configuracion, IUsuarioRepository usuarioRepository) : base(logger, configuracion)
+        public AuthApp(ILogger<BaseApp<AuthApp>> logger, IConfiguration configuracion, IUserRepository userRepository) : base(logger, configuracion)
         {
             this._key = configuracion.GetValue<string>("Jwt:Key"); 
             this._issuer = configuracion.GetValue<string>("Jwt:Issuer");
             this._audience = configuracion.GetValue<string>("Jwt:Audience"); 
-            this._usuarioRepository = usuarioRepository;
+            this._userRepository = userRepository;
         }
 
-        public async Task<StatusResponse<OutUsuarioLogeado>> Login(InUsuario usuario) {
+        public async Task<StatusResponse<OutUser>> Login(InUser user) {
 
 
-            StatusResponse<OutUsuarioLogeado> Respuesta = new StatusResponse<OutUsuarioLogeado>();
+            StatusResponse<OutUser> Respuesta = new StatusResponse<OutUser>();
 
             InUsuarioValidator validator = new InUsuarioValidator();
-            ValidationResult resultadoValidacion = validator.Validate(usuario);
+            ValidationResult resultadoValidacion = validator.Validate(user);
 
             if (!resultadoValidacion.IsValid)
-                return new StatusResponse<OutUsuarioLogeado>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
+                return new StatusResponse<OutUser>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
 
-            StatusResponse<UsuarioPortal> Validacion = await this.ProcesoComplejo(() => _usuarioRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(usuario.NombreUsuario));
+            StatusResponse<EUser> Validacion = await this.ComplexProcess(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
 
-            if (!Validacion.Satisfactorio )
-                return new StatusResponse<OutUsuarioLogeado>(false,Validacion.Titulo,Validacion.Detalle, StatusCodes.Status500InternalServerError);
+            if (!Validacion.Success )
+                return new StatusResponse<OutUser>(false,Validacion.Title,Validacion.Detail, StatusCodes.Status500InternalServerError);
 
             if ( Validacion.Data == null)
-                return new StatusResponse<OutUsuarioLogeado>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status400BadRequest);
+                return new StatusResponse<OutUser>(false, "Usuario no registrado", Validacion.Detail, StatusCodes.Status400BadRequest);
 
-            var validacionPassword =  this.ValidacionContrasenia(usuario.Password, Validacion.Data.Password);
+            var validacionPassword =  this.ValidacionContrasenia(user.Password, Validacion.Data.Password);
 
             if (!validacionPassword.Data) 
-                return new StatusResponse<OutUsuarioLogeado>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
+                return new StatusResponse<OutUser>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
 
 
             StatusResponse<string> Token =  GenerateToken(Validacion.Data.Id);
 
-            OutUsuarioLogeado UsuarioLogeado = new OutUsuarioLogeado();
+            OutUser UsuarioLogeado = new OutUser();
             UsuarioLogeado.Token = Token.Data;
             Respuesta.Data = UsuarioLogeado;
-            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
 
         }
 
-        public StatusResponse<bool> ValidacionContrasenia(string ContraseniaEnviada,string contraseniaGuardada) {
+        public StatusResponse<bool> PasswordValidation(string passwordSend,string passwordRegister) {
 
             StatusResponse<bool> Respuesta = new();
             bool ContraseniaEnviadaConHash = false;
-            ContraseniaEnviadaConHash =   this.VerifyHashedPasswordV3(contraseniaGuardada, ContraseniaEnviada);
-            Respuesta.Titulo = ContraseniaEnviadaConHash == true ? "" : "Error con las credenciales";
-            Respuesta.Satisfactorio = true;
+            ContraseniaEnviadaConHash =   this.VerifyHashedPasswordV3(passwordRegister, passwordSend);
+            Respuesta.Title = ContraseniaEnviadaConHash == true ? "" : "Error con las credenciales";
+            Respuesta.Success = true;
             Respuesta.Data = ContraseniaEnviadaConHash;
 
             return Respuesta;
@@ -107,9 +107,9 @@ namespace Cuentas.Backend.Aplication.Token
             }
             catch (Exception ex)
             {
-                Respuesta.Satisfactorio = false;
-                Respuesta.Titulo = ex.Message;
-                Respuesta.Status = StatusCodes.Status500InternalServerError;
+                Respuesta.Success = false;
+                Respuesta.Title = ex.Message;
+                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -117,7 +117,7 @@ namespace Cuentas.Backend.Aplication.Token
 
         }
 
-        public ClaimsPrincipal GetPrincipal(string token)
+        public ClaimsPrincipal GetMain(string token)
         {
             try
             {

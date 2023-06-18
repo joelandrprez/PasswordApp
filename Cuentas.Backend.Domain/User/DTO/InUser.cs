@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Cuentas.Backend.Domain.Usuario.DTO
 {
-    public class InUsuario
+    public class InUser
     {
         public int? Id { get; set; }
         public string NombreUsuario { get; set; }
         public string Password { get; set; }
     }
-    public class InUsuarioValidator : AbstractValidator<InUsuario>
+    public class InUsuarioValidator : AbstractValidator<InUser>
     {
         public InUsuarioValidator()
         {

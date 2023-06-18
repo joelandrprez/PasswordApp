@@ -22,7 +22,7 @@ namespace Cuentas.Backend.Infraestruture.EstadoProyecto
 
         }
 
-        public async Task<Pagination<EProjectStatus>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        public async Task<Pagination<EProjectStatus>> List(int page, int size, string? search, string? orderBy, string? orderDir)
         {
             Pagination<EProjectStatus> paginacion = null;
             DynamicParameters dinamycParams = new DynamicParameters();
@@ -75,7 +75,7 @@ namespace Cuentas.Backend.Infraestruture.EstadoProyecto
             return paginacion;
         }
 
-        public async Task Registrar(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Save(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion)
         {
             DynamicParameters dinamycParams = new DynamicParameters();
             dinamycParams.Add("Estado", estadoProject.Estado);
@@ -89,7 +89,7 @@ namespace Cuentas.Backend.Infraestruture.EstadoProyecto
 
         }
 
-        public async Task Actualizar(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion)
+        public async Task Update(EProjectStatus estadoProject, SqlConnection conexion, SqlTransaction transaccion)
         {
             DynamicParameters dinamycParams = new DynamicParameters();
             dinamycParams.Add("Id", estadoProject.Id);

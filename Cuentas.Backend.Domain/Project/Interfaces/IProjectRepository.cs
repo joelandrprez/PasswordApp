@@ -10,11 +10,11 @@ namespace Cuentas.Backend.Domain.Proyectos.Interfaces
 {
     public interface IProjectRepository
     {
-        Task<Pagination<Project>> Listar(int page, int size, string? search, string? orderBy, string? orderDir);
+        Task<Pagination<Project>> List(int page, int size, string? search, string? orderBy, string? orderDir);
 
-        Task Registrar(Project proyecto);
+        Task Save(Project proyecto);
 
-        Task Actualizar(Project proyecto);
+        Task Update(Project proyecto);
 
     }
 }

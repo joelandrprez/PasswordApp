@@ -22,7 +22,7 @@ namespace Cuentas.Backend.API.Controllers.TipoCuenta
 
         [HttpGet]
         [Route("habilitados")]
-        public async Task<ActionResult> ListarHabilitados()
+        public async Task<ActionResult> List()
         {
             
             return StatusCode(200, "");

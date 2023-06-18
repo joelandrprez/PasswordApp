@@ -20,7 +20,7 @@ namespace Cuentas.Backend.Infraestruture.Proyecto
             this._connection = connection;
         }
 
-        public async Task Actualizar(Project proyecto)
+        public async Task Update(Project proyecto)
         {
             using (var scope = await this._connection.BeginConnection())
             {
@@ -42,7 +42,7 @@ namespace Cuentas.Backend.Infraestruture.Proyecto
             }
         }
 
-        public async Task<Pagination<Project>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        public async Task<Pagination<Project>> List(int page, int size, string? search, string? orderBy, string? orderDir)
         {
             Pagination<Project> paginacion = null;
             DynamicParameters dinamycParams = new DynamicParameters();
@@ -95,7 +95,7 @@ namespace Cuentas.Backend.Infraestruture.Proyecto
             return paginacion;
         }
 
-        public async Task Registrar(Project proyecto)
+        public async Task Save(Project proyecto)
         {
             using (var scope = await this._connection.BeginConnection())
             {

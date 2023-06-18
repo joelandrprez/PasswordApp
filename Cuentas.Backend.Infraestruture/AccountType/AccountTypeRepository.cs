@@ -11,7 +11,7 @@ namespace Cuentas.Backend.Infraestruture.TipoCuentas
 {
     public class AccountTypeRepository : IAccountTypeRepository
     {
-        public Task<Pagination<EAccountType>> Listar(int page, int size, string? search, string? orderBy, string? orderDir)
+        public Task<Pagination<EAccountType>> List(int page, int size, string? search, string? orderBy, string? orderDir)
         {
             throw new NotImplementedException();
         }

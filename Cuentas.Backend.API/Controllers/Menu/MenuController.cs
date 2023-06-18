@@ -12,7 +12,7 @@ namespace Cuentas.Backend.API.Controllers.Menu
     {
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult> ObtenerMenu(int? page, int? size, string? search, string? orderBy, string? orderDir)
+        public async Task<ActionResult> List(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             //StatusResponse<Pagination<Cuenta>> Respuesta = await _cuentaApp.Listar(page, size, search, orderBy, orderDir);
             return Ok(new { page, size, search, orderBy, orderDir });
