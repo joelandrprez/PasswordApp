@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cuentas.Backend.API.Controllers.Token
 {
-    [Route("api/v1/token")]
+    [Route("api/v1/Auth")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "Token")]
+    [ApiExplorerSettings(GroupName = "Auth")]
     public class AuthController : ControllerBase
     {
         private readonly ILogger<AuthController> _logger;
@@ -21,10 +21,10 @@ namespace Cuentas.Backend.API.Controllers.Token
         }
 
         [HttpPost]
-        [Route("login")]
-        public async Task<ActionResult> Login([FromBody] InUser usuario)
+        [Route("Login")]
+        public async Task<ActionResult> Login([FromBody] InUsuario usuario)
         {
-            StatusResponse<OutUser> Respuesta = await _authApp.Login(usuario);
+            StatusResponse<OutUsuario> Respuesta = await _authApp.Login(usuario);
 
             return StatusCode(Respuesta.StatusCode, Respuesta);
         }

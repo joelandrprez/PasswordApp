@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cuentas.Backend.Domain.Menu.Domain
+namespace Cuentas.Backend.Aplication.Tipocuenta
 {
-    public class EMenu
+    public class TipoCuentaApp
     {
     }
 }

@@ -82,19 +82,19 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<ICustomConnection, CustomConnection>();
 
-builder.Services.AddTransient<AccountApp>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddTransient<Cuentas.Backend.Aplication.Cuentas.CuentaApp>();
+builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();
 
 builder.Services.AddTransient<AuthApp>();
 
-builder.Services.AddTransient<UserApp>();
-builder.Services.AddScoped<IUserRepository, UsuarioRepository>();
+builder.Services.AddTransient<Cuentas.Backend.Aplication.Usuario.UsuarioApp>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-builder.Services.AddTransient<ProjectStatusApp>();
-builder.Services.AddScoped<IProjectStatusRepository, ProjectStatusRepository>();
+builder.Services.AddTransient<EstadoProyectoApp>();
+builder.Services.AddScoped<IEstadoProyectoRepository, EstadoProyectoRepository>();
 
-builder.Services.AddTransient<ProjectApp>();
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddTransient<ProyectoApp>();
+builder.Services.AddScoped<IProyectoRepository, ProyectoRepository>();
 
 var app = builder.Build();
 
@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors();
 
 app.UseHttpsRedirection();
 

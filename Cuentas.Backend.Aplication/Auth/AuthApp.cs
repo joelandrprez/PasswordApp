@@ -23,10 +23,10 @@ namespace Cuentas.Backend.Aplication.Token
         private string _key = string.Empty;
         private string _issuer = string.Empty;
         private string _audience = string.Empty;
-        private readonly IUserRepository _userRepository;
+        private readonly IUsuarioRepository _userRepository;
         private const int Pbkdf2Iterations = 1000;
 
-        public AuthApp(ILogger<BaseApp<AuthApp>> logger, IConfiguration configuracion, IUserRepository userRepository) : base(logger, configuracion)
+        public AuthApp(ILogger<BaseApp<AuthApp>> logger, IConfiguration configuracion, IUsuarioRepository userRepository) : base(logger, configuracion)
         {
             this._key = configuracion.GetValue<string>("Jwt:Key"); 
             this._issuer = configuracion.GetValue<string>("Jwt:Issuer");
@@ -34,34 +34,34 @@ namespace Cuentas.Backend.Aplication.Token
             this._userRepository = userRepository;
         }
 
-        public async Task<StatusResponse<OutUser>> Login(InUser user) {
+        public async Task<StatusResponse<OutUsuario>> Login(InUsuario user) {
 
 
-            StatusResponse<OutUser> Respuesta = new StatusResponse<OutUser>();
+            StatusResponse<OutUsuario> Respuesta = new StatusResponse<OutUsuario>();
 
             InUsuarioValidator validator = new InUsuarioValidator();
             ValidationResult resultadoValidacion = validator.Validate(user);
 
             if (!resultadoValidacion.IsValid)
-                return new StatusResponse<OutUser>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
+                return new StatusResponse<OutUsuario>(false, "Datos no validos", "", StatusCodes.Status400BadRequest, this.GetErrors(resultadoValidacion.Errors));
 
-            StatusResponse<EUser> Validacion = await this.ComplexProcess(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
+            StatusResponse<EUsuario> Validacion = await this.ComplexProcess(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
 
             if (!Validacion.Success )
-                return new StatusResponse<OutUser>(false,Validacion.Title,Validacion.Detail, StatusCodes.Status500InternalServerError);
+                return new StatusResponse<OutUsuario>(false,Validacion.Title,Validacion.Detail, StatusCodes.Status500InternalServerError);
 
             if ( Validacion.Data == null)
-                return new StatusResponse<OutUser>(false, "Usuario no registrado", Validacion.Detail, StatusCodes.Status400BadRequest);
+                return new StatusResponse<OutUsuario>(false, "Usuario no registrado", Validacion.Detail, StatusCodes.Status400BadRequest);
 
-            var validacionPassword =  this.ValidacionContrasenia(user.Password, Validacion.Data.Password);
+            var validacionPassword =  this.PasswordValidation(user.Password, Validacion.Data.Password);
 
             if (!validacionPassword.Data) 
-                return new StatusResponse<OutUser>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
+                return new StatusResponse<OutUsuario>(false, validacionPassword.Title, validacionPassword.Detail,StatusCodes.Status406NotAcceptable);
 
 
             StatusResponse<string> Token =  GenerateToken(Validacion.Data.Id);
 
-            OutUser UsuarioLogeado = new OutUser();
+            OutUsuario UsuarioLogeado = new OutUsuario();
             UsuarioLogeado.Token = Token.Data;
             Respuesta.Data = UsuarioLogeado;
             Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;

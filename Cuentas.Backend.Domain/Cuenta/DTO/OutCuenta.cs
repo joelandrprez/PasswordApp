@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cuentas.Backend.Domain.Menu.Domain
+namespace Cuentas.Backend.Domain.Cuentas.DTO
 {
-    public class EMenu
+    public class OutCuenta
     {
+        public string Cadena { get; set; }
     }
 }

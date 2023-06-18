@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cuentas.Backend.Domain.Menu.Domain
+namespace Cuentas.Backend.Domain.Token.DTO
 {
-    public class EMenu
+    public class OutUsuario
     {
+        public string Token { get; set; }
     }
 }
