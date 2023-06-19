@@ -47,16 +47,16 @@ namespace Cuentas.Backend.Aplication.Token
 
             StatusResponse<EUsuario> Validacion = await this.ProcesoComplejo(() => _userRepository.ValidarExistenciaDeNombreDeUsuarioSinTransaccion(user.NombreUsuario));
 
-            if (!Validacion.Success )
-                return new StatusResponse<OutUsuario>(false,Validacion.Title,Validacion.Detail, StatusCodes.Status500InternalServerError);
+            if (!Validacion.Satisfactorio )
+                return new StatusResponse<OutUsuario>(false,Validacion.Titulo,Validacion.Detalle, StatusCodes.Status500InternalServerError);
 
             if ( Validacion.Data == null)
-                return new StatusResponse<OutUsuario>(false, "Usuario no registrado", Validacion.Detail, StatusCodes.Status400BadRequest);
+                return new StatusResponse<OutUsuario>(false, "Usuario no registrado", Validacion.Detalle, StatusCodes.Status400BadRequest);
 
             var validacionPassword =  this.PasswordValidation(user.Password, Validacion.Data.Password);
 
             if (!validacionPassword.Data) 
-                return new StatusResponse<OutUsuario>(false, validacionPassword.Title, validacionPassword.Detail,StatusCodes.Status406NotAcceptable);
+                return new StatusResponse<OutUsuario>(false, validacionPassword.Titulo, validacionPassword.Detalle,StatusCodes.Status406NotAcceptable);
 
 
             StatusResponse<string> Token =  GenerateToken(Validacion.Data.Id);
@@ -64,7 +64,7 @@ namespace Cuentas.Backend.Aplication.Token
             OutUsuario UsuarioLogeado = new OutUsuario();
             UsuarioLogeado.Token = Token.Data;
             Respuesta.Data = UsuarioLogeado;
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
 
         }
@@ -74,8 +74,8 @@ namespace Cuentas.Backend.Aplication.Token
             StatusResponse<bool> Respuesta = new();
             bool ContraseniaEnviadaConHash = false;
             ContraseniaEnviadaConHash =   this.VerifyHashedPasswordV3(passwordRegister, passwordSend);
-            Respuesta.Title = ContraseniaEnviadaConHash == true ? "" : "Error con las credenciales";
-            Respuesta.Success = true;
+            Respuesta.Titulo = ContraseniaEnviadaConHash == true ? "" : "Error con las credenciales";
+            Respuesta.Satisfactorio = true;
             Respuesta.Data = ContraseniaEnviadaConHash;
 
             return Respuesta;
@@ -107,9 +107,9 @@ namespace Cuentas.Backend.Aplication.Token
             }
             catch (Exception ex)
             {
-                Respuesta.Success = false;
-                Respuesta.Title = ex.Message;
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = ex.Message;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 

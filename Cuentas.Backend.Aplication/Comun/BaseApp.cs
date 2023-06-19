@@ -33,22 +33,22 @@ namespace Cuentas.Backend.Aplication.Comun
             {
                 await callback();
 
-                response.Success = true;
-                response.Title = titulo;
+                response.Satisfactorio = true;
+                response.Titulo = titulo;
             }
             catch (CustomException customEx)
             {
                 this._logger.LogError(customEx, "Id: {0}", response.Id);
-                response.Success = false;
-                response.Title = customEx.Titulo;
-                response.Detail = customEx.ToString();
+                response.Satisfactorio = false;
+                response.Titulo = customEx.Titulo;
+                response.Detalle = customEx.ToString();
             }
             catch (Exception ex)
             {
                 this._logger.LogError(ex, "Id: {0}", response.Id);
-                response.Success = false;
-                response.Title = "Sucedió un error inesperado.";
-                response.Detail = ex.ToString();
+                response.Satisfactorio = false;
+                response.Titulo = "Sucedió un error inesperado.";
+                response.Detalle = ex.ToString();
             }
 
             return response;
@@ -63,23 +63,23 @@ namespace Cuentas.Backend.Aplication.Comun
             {
                 response.Data = await callbackData();
 
-                response.Title = titulo;
-                response.Success = true;
+                response.Titulo = titulo;
+                response.Satisfactorio = true;
             }
             catch (CustomException customEx)
             {
                 this._logger.LogError(customEx, "Id: {0}", response.Id);
-                response.Title = customEx.Titulo;
-                response.Detail = customEx.ToString();
-                response.Success = false;
+                response.Titulo = customEx.Titulo;
+                response.Detalle = customEx.ToString();
+                response.Satisfactorio = false;
                 //response.Errores = cuEx.Errores
             }
             catch (Exception ex)
             {
                 this._logger.LogError(ex, "Id: {0}", response.Id);
-                response.Title = "Sucedió un error inesperado.";
-                response.Detail = ex.ToString();
-                response.Success = false;
+                response.Titulo = "Sucedió un error inesperado.";
+                response.Detalle = ex.ToString();
+                response.Satisfactorio = false;
             }
 
             return response;

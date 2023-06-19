@@ -28,7 +28,7 @@ namespace Cuentas.Backend.API.Controllers.Usuario
         public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             StatusResponse<Paginacion<EUsuario>> Respuesta = await _usuarioApp.Listar(page, size, search, orderBy, orderDir);
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpPost]
@@ -37,7 +37,7 @@ namespace Cuentas.Backend.API.Controllers.Usuario
         {
             _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _usuarioApp.Registrar(cuenta, _usuario);
-            return StatusCode(Respuesta.StatusCode, Respuesta); 
+            return StatusCode(Respuesta.Codigo, Respuesta); 
         }
 
         [HttpPut]
@@ -46,7 +46,7 @@ namespace Cuentas.Backend.API.Controllers.Usuario
         {
             _usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _usuarioApp.Actualizar(cuenta, Id, _usuario);
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
     }

@@ -30,7 +30,7 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
         public async Task<ActionResult> Listar(int? page, int? size, string? search, string? orderBy, string? orderDir)
         {
             StatusResponse<Paginacion<ECuenta>> Respuesta = await _cuentaApp.Listar(page,size,search,orderBy,orderDir);
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpPost]
@@ -41,7 +41,7 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
             //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
 
             StatusSimpleResponse Respuesta = await _cuentaApp.Registrar(cuenta,int.Parse(_usuario));
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpPut]
@@ -51,15 +51,15 @@ namespace Cuentas.Backend.API.Controllers.Cuentas
             //_usuario = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault().Value;
             _usuario = "joel";
             StatusSimpleResponse Respuesta = await _cuentaApp.Actualizar(cuenta,id, int.Parse(_usuario));
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpGet]
-        [Route("cadena/{id}")]
+        [Route("Cadena/{id}")]
         public async Task<ActionResult> ObtenerPassword(int id)
         {
             StatusResponse<OutCuenta> Respuesta = await _cuentaApp.ObtenerPassword(id);
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(500, Respuesta);
         }
     }
 }

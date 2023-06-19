@@ -30,10 +30,10 @@ namespace Cuentas.Backend.Aplication.Cuentas
             size = size ?? 10;
             StatusResponse<Paginacion<ECuenta>> Respuesta = await this.ProcesoComplejo(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Success)
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
 
-            Respuesta.Title = Respuesta.StatusCode == StatusCodes.Status200OK ? MaestraConstante.MENSAJE_OPERACION_EXITOSA: MaestraConstante.MENSAJE_ERROR_GENERICO;
+            Respuesta.Titulo = Respuesta.Codigo == StatusCodes.Status200OK ? MaestraConstante.MENSAJE_OPERACION_EXITOSA: MaestraConstante.MENSAJE_ERROR_GENERICO;
             return Respuesta;
         }
 
@@ -48,9 +48,9 @@ namespace Cuentas.Backend.Aplication.Cuentas
             if (!ResultadoValidacion.IsValid) {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -83,9 +83,9 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
                 Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Registrar(cuentaDominio, conexion, transaction), "");
 
-                if (!Respuesta.Success)
+                if (!Respuesta.Satisfactorio)
                 {
-                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                    Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -109,8 +109,8 @@ namespace Cuentas.Backend.Aplication.Cuentas
                 }
             }
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Success = true;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Satisfactorio = true;
             return Respuesta;
         
         }
@@ -127,7 +127,7 @@ namespace Cuentas.Backend.Aplication.Cuentas
             {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
                 return Respuesta;
             }
@@ -164,9 +164,9 @@ namespace Cuentas.Backend.Aplication.Cuentas
 
             Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Actualizar(cuentaDominio, conexion, transaction), "");
 
-            if (!Respuesta.Success)
+            if (!Respuesta.Satisfactorio)
             {
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -190,8 +190,8 @@ namespace Cuentas.Backend.Aplication.Cuentas
                 }
             }
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Success = true;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Satisfactorio = true;
             return Respuesta;
 
         }
@@ -201,8 +201,8 @@ namespace Cuentas.Backend.Aplication.Cuentas
             StatusResponse<OutCuenta> respuesta = new StatusResponse<OutCuenta>();
             StatusResponse<ECuenta> DatosUsuario = await this.ProcesoComplejo(() => _usuarioRepository.ObtenerPassword(id));
 
-            if (!DatosUsuario.Success)
-                return new StatusResponse<OutCuenta>(false,DatosUsuario.Title,DatosUsuario.Detail,StatusCodes.Status500InternalServerError,DatosUsuario.Errors);
+            if (!DatosUsuario.Satisfactorio)
+                return new StatusResponse<OutCuenta>(false,DatosUsuario.Titulo,DatosUsuario.Detalle,StatusCodes.Status500InternalServerError,DatosUsuario.Errors);
 
             if (DatosUsuario.Data == null)
                 return new StatusResponse<OutCuenta>(false, "No se pudo recuperar el dato de la cuenta", "", StatusCodes.Status500InternalServerError, DatosUsuario.Errors);
@@ -211,8 +211,8 @@ namespace Cuentas.Backend.Aplication.Cuentas
             OutCuenta cuenta = new OutCuenta();
             cuenta.Cadena = DatosUsuario.Data.Password;
             respuesta.Data = cuenta;
-            respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            respuesta.Detail = "Se copio la contraseña";
+            respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            respuesta.Detalle = "Se copio la contraseña";
 
             return respuesta;
         }

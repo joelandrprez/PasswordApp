@@ -24,8 +24,8 @@ namespace Cuentas.Backend.Aplication.Proyecto
             size = size ?? 10;
             StatusResponse<Paginacion<EProyecto>> Respuesta = await this.ProcesoComplejo(() => _proyectoRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Success)
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
 
             return Respuesta;
         }
@@ -43,9 +43,9 @@ namespace Cuentas.Backend.Aplication.Proyecto
             {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -60,15 +60,15 @@ namespace Cuentas.Backend.Aplication.Proyecto
 
            Respuesta = await this.ProcesoSimple(() => _proyectoRepository.Registrar(proyetoDominio), "");
 
-           if (!Respuesta.Success)
+           if (!Respuesta.Satisfactorio)
            {
-               Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+               Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                return Respuesta;
            }
 
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Success = true;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Satisfactorio = true;
             return Respuesta;
 
         }
@@ -87,9 +87,9 @@ namespace Cuentas.Backend.Aplication.Proyecto
             {
                 Guid IdRespuestaError = new Guid();
                 Respuesta.Id = IdRespuestaError;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(ResultadoValidacion.Errors);
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
@@ -106,14 +106,14 @@ namespace Cuentas.Backend.Aplication.Proyecto
             Respuesta = await this.ProcesoSimple(() => _proyectoRepository.Actualizar(proyetoDominio), "");
 
 
-            if (!Respuesta.Success)
+            if (!Respuesta.Satisfactorio)
             {
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                 return Respuesta;
             }
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
-            Respuesta.Success = true;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Satisfactorio = true;
             return Respuesta;
 
         }

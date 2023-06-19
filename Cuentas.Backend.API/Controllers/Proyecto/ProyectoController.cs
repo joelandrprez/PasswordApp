@@ -30,7 +30,7 @@ namespace Cuentas.Backend.API.Controllers.Proyecto
         public async Task<ActionResult> Listar(int? pagina, int? tamanio, string? termino, string? ordenarPor, string? ordenarDir)
         {
             StatusResponse<Paginacion<Domain.Proyectos.Domain.EProyecto>> Respuesta = await _proyectoApp.List(pagina, tamanio, termino, ordenarPor, ordenarDir);
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpPost]
@@ -39,7 +39,7 @@ namespace Cuentas.Backend.API.Controllers.Proyecto
         {
             string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _proyectoApp.Save(cuenta, int.Parse(CreadoPor));
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
         [HttpPut]
@@ -48,7 +48,7 @@ namespace Cuentas.Backend.API.Controllers.Proyecto
         {
             string CreadoPor = User.Claims.Where(x => x.Type == MaestraConstante.CODIGO_ID_USER_TOKEN).FirstOrDefault()?.Value;
             StatusSimpleResponse Respuesta = await _proyectoApp.Update(cuenta, id, int.Parse(CreadoPor));
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
     }
 }

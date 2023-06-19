@@ -26,7 +26,7 @@ namespace Cuentas.Backend.API.Controllers.Token
         {
             StatusResponse<OutUsuario> Respuesta = await _authApp.Login(usuario);
 
-            return StatusCode(Respuesta.StatusCode, Respuesta);
+            return StatusCode(Respuesta.Codigo, Respuesta);
         }
 
     }

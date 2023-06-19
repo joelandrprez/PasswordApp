@@ -30,7 +30,7 @@ namespace Cuentas.Backend.API.Controllers.Menu
         public async Task<ActionResult> Listar()
         {
             StatusResponse<List<OutMenu>> Respuesta = await this._menuApp.List(1);
-            return StatusCode(Respuesta.StatusCode,Respuesta);
+            return StatusCode(Respuesta.Codigo,Respuesta);
         }
     }
 }

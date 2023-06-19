@@ -37,8 +37,8 @@ namespace Cuentas.Backend.Aplication.Usuario
             size = size ?? 10;
             StatusResponse<Paginacion<EUsuario>> Respuesta = await this.ProcesoComplejo(() => _usuarioRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Success)
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
 
             return Respuesta;
         }
@@ -51,10 +51,10 @@ namespace Cuentas.Backend.Aplication.Usuario
             ValidationResult result = validator.Validate(usuario);
             if (!result.IsValid)
             {
-                Respuesta.Success = false;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(result.Errors);
-                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
+                Respuesta.Codigo = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
@@ -85,8 +85,8 @@ namespace Cuentas.Backend.Aplication.Usuario
                 UsuarioRegistro.UsuarioCreacion = int.Parse(creadoPor);
                 UsuarioRegistro.FechaCreacion = FechaOperacion;
 
-                if (!ValidarExistencia.Success) {
-                    ValidarExistencia.StatusCode = StatusCodes.Status500InternalServerError;
+                if (!ValidarExistencia.Satisfactorio) {
+                    ValidarExistencia.Codigo = StatusCodes.Status500InternalServerError;
                     return ValidarExistencia;
                 }
 
@@ -95,8 +95,8 @@ namespace Cuentas.Backend.Aplication.Usuario
 
                 Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Registrar(UsuarioRegistro, conexion, transaction), "");
 
-                if (!Respuesta.Success) {
-                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                if (!Respuesta.Satisfactorio) {
+                    Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                     return Respuesta;                  
                 }
 
@@ -122,7 +122,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             }
 
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
@@ -134,10 +134,10 @@ namespace Cuentas.Backend.Aplication.Usuario
             ValidationResult result = validator.Validate(usuario);
             if (!result.IsValid)
             {
-                Respuesta.Success = false;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(result.Errors);
-                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
+                Respuesta.Codigo = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
@@ -168,9 +168,9 @@ namespace Cuentas.Backend.Aplication.Usuario
 
                 Respuesta = await this.ProcesoSimple(() => _usuarioRepository.Actualizar(UsuarioRegistro, id, conexion, transaction), "");
 
-                if (!Respuesta.Success)
+                if (!Respuesta.Satisfactorio)
                 {
-                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                    Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -197,7 +197,7 @@ namespace Cuentas.Backend.Aplication.Usuario
             }
 
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
@@ -211,9 +211,9 @@ namespace Cuentas.Backend.Aplication.Usuario
                 respuesta = MaestraConstante.ESTADO_USUARIO_EXISTE;          
 
             StatusResponse<bool> Respuesta = new StatusResponse<bool> ();
-            Respuesta.Success = Busqueda.Success;
-            Respuesta.Title = Busqueda.Title;
-            Respuesta.Detail = Busqueda.Detail;
+            Respuesta.Satisfactorio = Busqueda.Satisfactorio;
+            Respuesta.Titulo = Busqueda.Titulo;
+            Respuesta.Detalle = Busqueda.Detalle;
             Respuesta.Data = respuesta;
             return Respuesta;
 

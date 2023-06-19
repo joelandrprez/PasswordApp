@@ -30,8 +30,8 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             size = size ?? 10;
             StatusResponse<Paginacion<EEstadoProyecto>> Respuesta = await this.ProcesoComplejo(() => _statusProjectRepository.Listar(page.Value, size.Value, search, orderBy, orderDir));
 
-            if (!Respuesta.Success)
-                Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+            if (!Respuesta.Satisfactorio)
+                Respuesta.Codigo = StatusCodes.Status500InternalServerError;
 
             return Respuesta;
         }
@@ -43,10 +43,10 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             ValidationResult result = validator.Validate(estadoProyecto);
             if (!result.IsValid)
             {
-                Respuesta.Success = false;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(result.Errors);
-                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
+                Respuesta.Codigo = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
@@ -78,9 +78,9 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
 
                 Respuesta = await this.ProcesoSimple(() => _statusProjectRepository.Registrar(EstadoProyecto, conexion, transaction), "");
 
-                if (!Respuesta.Success)
+                if (!Respuesta.Satisfactorio)
                 {
-                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                    Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -107,7 +107,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             }
 
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
@@ -119,10 +119,10 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             ValidationResult result = validator.Validate(estadoProyecto);
             if (!result.IsValid)
             {
-                Respuesta.Success = false;
-                Respuesta.Title = "Los datos enviados no son válidos";
+                Respuesta.Satisfactorio = false;
+                Respuesta.Titulo = "Los datos enviados no son válidos";
                 Respuesta.Errors = this.GetErrors(result.Errors);
-                Respuesta.StatusCode = StatusCodes.Status400BadRequest;
+                Respuesta.Codigo = StatusCodes.Status400BadRequest;
                 return Respuesta;
             }
 
@@ -155,9 +155,9 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
 
                 Respuesta = await this.ProcesoSimple(() => _statusProjectRepository.Actualizar(EstadoProyecto, conexion, transaction), "");
 
-                if (!Respuesta.Success)
+                if (!Respuesta.Satisfactorio)
                 {
-                    Respuesta.StatusCode = StatusCodes.Status500InternalServerError;
+                    Respuesta.Codigo = StatusCodes.Status500InternalServerError;
                     return Respuesta;
                 }
 
@@ -184,7 +184,7 @@ namespace Cuentas.Backend.Aplication.EstadoProyecto
             }
 
 
-            Respuesta.Title = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
+            Respuesta.Titulo = MaestraConstante.MENSAJE_OPERACION_EXITOSA;
             return Respuesta;
         }
 
